@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Rebound</title>
+<meta name="theme-color" content="#0a0a0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rebound">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <span class="logo">RE<span class="accent">BOUND</span></span>
+</header>
+
+<main>
+  <section id="screen-dash" class="screen active"></section>
+  <section id="screen-workout" class="screen"></section>
+  <section id="screen-protein" class="screen"></section>
+  <section id="screen-history" class="screen"></section>
+  <section id="screen-settings" class="screen"></section>
+</main>
+
+<div id="toast"></div>
+
+<nav>
+  <button data-nav="dash" class="on"><span class="ni">🏠</span>Home</button>
+  <button data-nav="workout"><span class="ni">💪</span>Workout</button>
+  <button data-nav="protein"><span class="ni">🥩</span>Protein</button>
+  <button data-nav="history"><span class="ni">📈</span>History</button>
+  <button data-nav="settings"><span class="ni">⚙️</span>Settings</button>
+</nav>
+
+<script src="js/exercises.js"></script>
+<script src="js/state.js"></script>
+<script src="js/generator.js"></script>
+<script src="js/progression.js"></script>
+<script src="js/protein.js"></script>
+<script src="js/workout.js"></script>
+<script src="js/history.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
