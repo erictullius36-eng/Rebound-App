@@ -45,3 +45,6 @@ Settings → **Backup everything (JSON)** — save the file somewhere safe (iClo
 ## A note on pain
 
 The app distinguishes soreness (train around it) from pain (back off). Be honest in the post-workout check — that's the mechanism that gets you from "can't squat pain-free" to dunking. Nothing here is medical advice; sharp pain, dizziness, or chest pain means stop, full stop.
+
+
+
