@@ -25,7 +25,8 @@ R.renderHistory = function(){
     var any = (w3 && w3.completed) || p3.entries.length;
     if (!any && j > 0) continue; // don't count days before you started using the app
     days30++;
-    if ((w3 && w3.completed) && p3.protein >= goal) success30++;
+    // Julia trains 2-3x/week, so her success metric is protein; Eric's is workout + protein
+    if (R.isJulia() ? p3.protein >= goal : ((w3 && w3.completed) && p3.protein >= goal)) success30++;
   }
   var rate = days30 ? Math.round(success30 / days30 * 100) : 0;
 
@@ -58,7 +59,7 @@ R.renderHistory = function(){
       '<h3>30-day success rate <span class="hint-inline">(goal: 80%)</span></h3>' +
       '<div class="bar tall"><div class="bar-fill' + (rate >= 80 ? ' good' : '') + '" style="width:' + rate + '%"></div>' +
       '<span class="bar-marker" style="left:80%"></span></div>' +
-      '<p class="hint">' + rate + '% of active days you finished the workout AND hit protein.</p>' +
+      '<p class="hint">' + rate + '% of active days you ' + (R.isJulia() ? 'hit your protein target.' : 'finished the workout AND hit protein.') + '</p>' +
     '</div>' +
     '<h3>Day by day</h3>' + rows +
     '<div class="card">' +

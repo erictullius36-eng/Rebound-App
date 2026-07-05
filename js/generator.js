@@ -50,6 +50,99 @@ R.lastCompletedGap = function(dateStr){
   return null;
 };
 
+// ---- Julia: eligibility, rotation, generation ----
+// Difficulty caps reuse the exercise minStage tiers as intensity tiers.
+R.J_DIFF_CAP = { gentle:1, standard:2, challenge:3 };
+
+R.juliaEligible = function(pat, dateStr, recent, usedIds){
+  var prefs = R.S.prefs;
+  var cap = R.J_DIFF_CAP[prefs.difficulty];
+  var ppStage = R.S.rebuild.ppcore.stage;
+  var kneeCap = prefs.difficulty === 'gentle' ? 2 : 3; // left knee: gentle mode avoids ks>=2
+  return R.EXDB.filter(function(e){
+    if (pat === 'ppcore') {
+      if (e.pat !== 'ppcore' && e.pps === undefined) return false;
+      var need = e.pat === 'ppcore' ? (e.minStage || 0) : e.pps;
+      if (need > ppStage) return false;
+    } else {
+      if (e.pat !== pat) return false;
+      if ((e.minStage || 0) > cap) return false;
+    }
+    if (e.pat === 'jump') return false; // no impact work in Julia's program
+    if (prefs.equip === 'bw' ? !e.bw : e.eq === 'g') return false; // bw mode or home-gym mode
+    if (usedIds[e.id]) return false;
+    if (R.S.avoid[e.id] && R.S.avoid[e.id] >= dateStr) return false;
+    if (e.ks >= kneeCap) return false;
+    return true;
+  }).sort(function(a, b){
+    var stg = function(e){ return pat === 'ppcore' ? (e.pat === 'ppcore' ? (e.minStage||0) : e.pps) : (e.minStage||0); };
+    var top = pat === 'ppcore' ? ppStage : cap;
+    var sa = (top - stg(a)) * 10 + (recent[a.id] ? 5 : 0);
+    var sb = (top - stg(b)) * 10 + (recent[b.id] ? 5 : 0);
+    return sa - sb || Math.random() - 0.5;
+  });
+};
+
+R.juliaCompletedCount = function(){
+  var n = 0;
+  Object.keys(R.S.workouts).forEach(function(d){ if (R.S.workouts[d].completed) n++; });
+  return n;
+};
+
+R.juliaTemplate = function(rot){
+  var T = [
+    {focus:'Full Body A — Lower Focus', slots:['squat','lunge','ppcore'], extra:['hinge','ham','calf_foot']},
+    {focus:'Full Body B — Upper Focus', slots:['push_h','pull_h','ppcore'], extra:['push_v','bi','tri']},
+    {focus:'Full Body C — Move & Core', slots:['condition','ppcore','mobility'], extra:['ppcore','mobility','calf_foot']}
+  ];
+  return T[rot % 3];
+};
+R.juliaNextFocus = function(){
+  var w = R.S.workouts[R.today()];
+  if (w) return w.focus;
+  return R.juliaTemplate(R.juliaCompletedCount()).focus;
+};
+
+R.generateJuliaWorkout = function(dateStr){
+  var prefs = R.S.prefs;
+  var t = R.juliaTemplate(R.juliaCompletedCount());
+  // session length: short = base slots, medium/long add from the extras list
+  var slots = t.slots.slice();
+  var extraN = prefs.length === 'medium' ? 1 : (prefs.length === 'long' ? 3 : 0);
+  if (prefs.difficulty === 'challenge') extraN += 1;
+  slots = slots.concat(t.extra.slice(0, extraN));
+
+  var recent = R.recentIds(dateStr, 3);
+  var usedIds = {};
+  var exercises = [];
+  var setsN = prefs.difficulty === 'gentle' ? 2 : 3;
+  slots.forEach(function(pat){
+    var pool = R.juliaEligible(pat, dateStr, recent, usedIds);
+    if (!pool.length) return;
+    var pick = pool[0];
+    usedIds[pick.id] = true;
+    var ex = R.buildExercise(pick, {});
+    while (ex.sets.length > setsN) ex.sets.pop();
+    while (ex.sets.length < setsN) ex.sets.push({reps:'', weight: ex.suggestW || '', done:false});
+    exercises.push(ex);
+  });
+
+  var notes = [];
+  if (prefs.difficulty === 'gentle') notes.push('Rebuilding phase — smooth reps, full exhales, nothing to prove. Bump difficulty in Settings whenever you\'re ready.');
+  var wu = prefs.equip === 'bw'
+    ? ['March in place — 2 min', '360 breathing — 5 slow breaths', 'Hip circles — 8 each way', 'Bodyweight glute bridge — 10']
+    : ['Easy bike spin — 3 min', '360 breathing — 5 slow breaths', 'Leg swings — 10 each direction', 'Bodyweight glute bridge — 10'];
+  var cd = ['Hip flexor stretch — 30s each side', 'Calf stretch — 30s each side', '360 breathing — 5 slow breaths to finish'];
+
+  return {
+    date: dateStr, focus: t.focus, loc: prefs.equip === 'bw' ? 'bw' : 'home', ball: false,
+    checkin: {energy:3, sore:{}}, notes: notes,
+    warmup: wu, cooldown: cd,
+    exercises: exercises,
+    completed: false, rating: null, pain: []
+  };
+};
+
 R.eligible = function(pat, loc, dateStr, recent, sore, usedIds){
   var stage = R.GATED.indexOf(pat) >= 0 ? R.S.rebuild[pat].stage : null;
   return R.EXDB.filter(function(e){
@@ -153,6 +246,17 @@ R.swapExercise = function(workout, idx){
   var used = {};
   workout.exercises.forEach(function(e){ used[e.id] = true; });
   var e = R.EX[cur.id];
+  if (R.isJulia()) {
+    var jpat = cur.pat === 'core' ? 'ppcore' : cur.pat; // pps-admitted core moves swap within the ladder
+    var jpool = R.juliaEligible(jpat, workout.date, {}, used);
+    if (!jpool.length) return false;
+    var jex = R.buildExercise(jpool[0], {});
+    var setsN = cur.sets.length;
+    while (jex.sets.length > setsN) jex.sets.pop();
+    while (jex.sets.length < setsN) jex.sets.push({reps:'', weight: jex.suggestW || '', done:false});
+    workout.exercises[idx] = jex;
+    return true;
+  }
   // try listed subs first
   var pick = null;
   (e.subs || []).some(function(sid){

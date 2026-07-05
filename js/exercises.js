@@ -65,6 +65,7 @@ R.EXDB = [
   {id:'puh2', n:'Chest-Supported DB Row', eq:'b', pat:'pull_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Chest on incline bench — zero back stress.', subs:['puh1','puh4']},
   {id:'puh3', n:'Machine Row', eq:'g', pat:'pull_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'', subs:['puh1','puh2']},
   {id:'puh4', n:'One-Arm DB Row', eq:'b', pat:'pull_h', ks:0, bs:1, fs:0, type:'w', sets:3, lo:8, hi:12, rest:75, note:'Hand on bench, flat back. Each arm.', subs:['puh2','puh1']},
+  {id:'puh5', n:'Doorway Towel Row', eq:'b', pat:'pull_h', ks:0, bs:0, fs:0, type:'bw', sets:3, lo:10, hi:15, rest:60, note:'Towel around a door handle or sturdy rail, lean back, row your chest to your hands. Walk feet forward to make it harder.', subs:['puh1','puh2']},
   // ---- PULL ACCESSORIES ----
   {id:'pa1', n:'Face Pull', eq:'b', pat:'pull_acc', ks:0, bs:0, fs:0, type:'w', sets:3, lo:12, hi:15, rest:60, note:'Rope to face, elbows high. Shoulder health for ball.', subs:['pa2','pa3']},
   {id:'pa2', n:'Rear Delt Fly', eq:'b', pat:'pull_acc', ks:0, bs:0, fs:0, type:'w', sets:3, lo:12, hi:15, rest:60, note:'Light, strict, squeeze.', subs:['pa1','pa3']},
@@ -106,7 +107,24 @@ R.EXDB = [
   {id:'mo8', n:'Hip Flexor Stretch (half-kneel)', eq:'b', pat:'mobility', ks:1, bs:0, fs:0, type:'iso', sets:2, lo:30, hi:45, rest:30, note:'Glute squeezed, tall. Desk-job antidote. Each side.', subs:['mo2','mo1']},
   {id:'mo9', n:'Child’s Pose Breathing', eq:'b', pat:'mobility', ks:1, bs:0, fs:0, type:'iso', sets:2, lo:45, hi:60, rest:30, note:'Long exhales. Decompress.', subs:['mo5','mo6']},
   {id:'mo10', n:'Vibration Plate Recovery Stand', eq:'h', pat:'mobility', ks:0, bs:0, fs:0, type:'time', sets:1, lo:5, hi:10, rest:0, note:'Soft knees on the plate. Circulation for legs and feet.', subs:['mo9','mo7']},
-  {id:'mo11', n:'Foam Roll Quads/Calves', eq:'g', pat:'mobility', ks:0, bs:0, fs:0, type:'time', sets:1, lo:5, hi:8, rest:0, note:'Slow passes, breathe.', subs:['mo2','mo7']}
+  {id:'mo11', n:'Foam Roll Quads/Calves', eq:'g', pat:'mobility', ks:0, bs:0, fs:0, type:'time', sets:1, lo:5, hi:8, rest:0, note:'Slow passes, breathe.', subs:['mo2','mo7']},
+  // ---- POSTPARTUM CORE LADDER (Julia) — pelvic-floor-safe progression, minStage = core ladder stage ----
+  {id:'pp1', n:'360 Breathing + Pelvic Floor Lift', eq:'b', pat:'ppcore', minStage:0, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:6, hi:8, rest:30, note:'Inhale ribs wide; on the slow exhale gently lift pelvic floor + draw belly in. This IS the workout — quality breaths.', subs:['pp2','pp3']},
+  {id:'pp2', n:'Heel Slides (with exhale)', eq:'b', pat:'ppcore', minStage:0, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:8, hi:10, rest:30, note:'Lying down, exhale + engage, slide one heel out and back. Low back stays quiet. Each leg.', subs:['pp1','pp3']},
+  {id:'pp3', n:'Supine Marching', eq:'b', pat:'ppcore', minStage:0, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:8, hi:12, rest:30, note:'Knees up one at a time, exhale each lift, no belly doming. Each side.', subs:['pp2','pp4']},
+  {id:'pp4', n:'Side Plank from Knees', eq:'b', pat:'ppcore', minStage:1, ks:0, bs:0, fs:0, type:'iso', sets:3, lo:15, hi:30, rest:45, note:'Knees bent, hips forward and lifted. Breathe — don\'t brace-and-hold-breath. Each side.', subs:['pp3','pp5']},
+  {id:'pp5', n:'Bear Hold', eq:'b', pat:'ppcore', minStage:2, ks:1, bs:0, fs:0, type:'iso', sets:3, lo:15, hi:30, rest:45, note:'Hands and toes, knees hovering an inch up. Exhale steadily, back flat.', subs:['pp4','pp6']},
+  {id:'pp6', n:'Glute Bridge March', eq:'b', pat:'ppcore', minStage:2, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:8, hi:12, rest:45, note:'Hold the bridge, march slowly. Hips stay level — that\'s the work.', subs:['pp5','pp4']},
+  {id:'pp7', n:'Tall-Kneeling Pallof Press', eq:'b', pat:'ppcore', minStage:2, ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:45, note:'Cable at chest, press out, resist the twist, exhale on the press. Each side.', subs:['pp5','pp6']},
+  // ---- LOW-IMPACT BODYWEIGHT CONDITIONING (no equipment) ----
+  {id:'cdbw', n:'March + Step-Out Intervals', eq:'b', pat:'condition', ks:0, bs:0, fs:1, type:'time', sets:1, lo:8, hi:12, rest:0, note:'1 min brisk march, 30s side step-outs with arm reach, repeat. Zero impact, heart rate up.', subs:['cd5','cd1']}
 ];
 R.EX = {}; R.EXDB.forEach(function(e){ R.EX[e.id] = e; });
+// No-equipment flags: doable in a living room with zero gear (Julia's bodyweight mode)
+['sq1','sq3','lg1','lg2','lg3','lg4','hg1','hg2','hm3','ph6','puh5','co1','co2','co3','co4','co9',
+ 'cf3','cf4','cf5','mo1','mo2','mo3','mo4','mo5','mo6','mo7','mo8','mo9',
+ 'pp1','pp2','pp3','pp4','pp5','pp6','cdbw'].forEach(function(id){ R.EX[id].bw = 1; });
+// Regular core moves admitted to the postpartum ladder at higher stages (pps = min core stage)
+R.EX.co1.pps = 1; R.EX.co2.pps = 1; R.EX.co9.pps = 1;
+R.EX.co3.pps = 2; R.EX.co4.pps = 2; R.EX.co5.pps = 2; R.EX.co6.pps = 3;
 window.R = R;

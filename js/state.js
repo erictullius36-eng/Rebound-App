@@ -1,34 +1,64 @@
-// Rebound state: load/save, defaults, dates, backup, CSV export.
+// Rebound state: profiles, load/save, defaults, dates, backup, CSV export.
+// Two profiles, fully separate: Eric ('rebound_v1') and Julia ('rebound_julia_v1').
+// The profile marker records which profile owns THIS device/browser.
 var R = window.R || {};
-R.KEY = 'rebound_v1';
+R.PROFILE_KEY = 'rebound_profile';
+R.keyFor = function(mode){ return mode === 'julia' ? 'rebound_julia_v1' : 'rebound_v1'; };
 
-R.defaults = function(){
+R.defaults = function(mode){
+  if (mode === 'julia') return {
+    version: 1,
+    mode: 'julia',
+    profile: { age:34, heightIn:67, weightLbs:165, sex:'female', goalWeight:145 },
+    nursing: true, // breastfeeding: gentle deficit, high protein; toggle off in Settings
+    prefs: { difficulty:'gentle', length:'short', equip:'home' },
+    rebuild: { ppcore:{stage:0, count:0} }, // postpartum core ladder
+    targets: { protein:0, calories:0, overridden:false },
+    foods: [],
+    proteinLog: {},
+    workouts: {},
+    progress: {},
+    avoid: {}
+  };
   return {
     version: 1,
+    mode: 'eric',
     profile: { age:38, heightIn:73, weightLbs:235, sex:'male', goalWeight:200, goalBF:13 },
-    schedule: { basketballDays:[2,4,5], homeDays:[0,6] }, // getDay(): Sun=0..Sat=6
+    schedule: { basketballDays:[2,4,5], homeDays:[0,6] },
     rebuild: {
       squat:{stage:0, clean:0}, lunge:{stage:0, clean:0},
       hinge:{stage:0, clean:0}, jump:{stage:0, clean:0}
     },
     targets: { protein:0, calories:0, overridden:false },
-    foods: [],            // {id, name, protein, cal, quick:true}
-    proteinLog: {},       // 'YYYY-MM-DD' -> [{name, protein, cal, t}]
-    workouts: {},         // 'YYYY-MM-DD' -> workout object
-    progress: {},         // exId -> {w: lastWeight, r: lastTopReps}
-    avoid: {}             // exId -> dateStr until which it's benched (pain)
+    foods: [],
+    proteinLog: {},
+    workouts: {},
+    progress: {},
+    avoid: {}
   };
 };
 
+// Returns state, or null if this device hasn't picked a profile yet (show picker).
 R.load = function(){
+  var mode = localStorage.getItem(R.PROFILE_KEY);
+  if (!mode && localStorage.getItem('rebound_v1')) mode = 'eric'; // legacy data = Eric's phone
+  if (!mode) return null;
+  localStorage.setItem(R.PROFILE_KEY, mode);
+  R.KEY = R.keyFor(mode);
   var raw = localStorage.getItem(R.KEY);
-  var s = raw ? JSON.parse(raw) : R.defaults();
-  // fill any missing keys from defaults (schema-safe upgrades)
-  var d = R.defaults();
+  var s = raw ? JSON.parse(raw) : R.defaults(mode);
+  var d = R.defaults(mode);
   Object.keys(d).forEach(function(k){ if (s[k] === undefined) s[k] = d[k]; });
   return s;
 };
+R.setProfile = function(mode){
+  localStorage.setItem(R.PROFILE_KEY, mode);
+  R.S = R.load();
+  R.refreshTargets();
+  R.save();
+};
 R.save = function(){ localStorage.setItem(R.KEY, JSON.stringify(R.S)); };
+R.isJulia = function(){ return R.S && R.S.mode === 'julia'; };
 
 // Local-timezone date string
 R.dstr = function(d){
@@ -47,13 +77,26 @@ R.weekday = function(dateStr){
   return new Date(+p[0], +p[1]-1, +p[2]).getDay();
 };
 
-// Targets: Mifflin-St Jeor, activity 1.45, -500 deficit; protein = 1g/lb goal weight.
+// Targets.
+// Eric: Mifflin-St Jeor male, activity 1.45, -500 deficit; protein 1g/lb goal weight.
+// Julia: Mifflin female, activity 1.35.
+//   Nursing: +400 kcal breastfeeding demand, gentle -300 deficit; protein 0.8g/lb current weight.
+//   Not nursing: -500 deficit (floor 1400); protein 1g/lb goal weight.
 R.calcTargets = function(){
   var p = R.S.profile;
   var kg = p.weightLbs * 0.4536, cm = p.heightIn * 2.54;
   var bmr = 10*kg + 6.25*cm - 5*p.age + (p.sex === 'male' ? 5 : -161);
-  var cal = Math.max(1800, Math.round(bmr * 1.45 - 500));
-  return { protein: Math.round(p.goalWeight * 1.0), calories: cal };
+  if (R.isJulia()) {
+    if (R.S.nursing) return {
+      protein: Math.round(p.weightLbs * 0.8),
+      calories: Math.round(bmr * 1.35 + 400 - 300)
+    };
+    return {
+      protein: Math.round(p.goalWeight * 1.0),
+      calories: Math.max(1400, Math.round(bmr * 1.35 - 500))
+    };
+  }
+  return { protein: Math.round(p.goalWeight * 1.0), calories: Math.max(1800, Math.round(bmr * 1.45 - 500)) };
 };
 R.refreshTargets = function(){
   if (!R.S.targets.overridden) {
@@ -74,10 +117,19 @@ R.proteinToday = function(dateStr){
 R.streak = function(){
   var n = 0, d = R.today();
   var w = R.S.workouts[d];
-  if (!w || !w.completed) d = R.addDays(d, -1); // today not done yet doesn't break it
+  if (!w || !w.completed) d = R.addDays(d, -1);
   while (true) {
     w = R.S.workouts[d];
     if (w && w.completed) { n++; d = R.addDays(d, -1); } else break;
+  }
+  return n;
+};
+// Workouts completed in the last 7 days (Julia's cadence metric)
+R.weekCount = function(){
+  var n = 0;
+  for (var i = 0; i < 7; i++) {
+    var w = R.S.workouts[R.addDays(R.today(), -i)];
+    if (w && w.completed) n++;
   }
   return n;
 };
@@ -96,7 +148,7 @@ R.csvCell = function(v){
   return (v.indexOf(',') >= 0 || v.indexOf('"') >= 0 || v.indexOf('\n') >= 0) ? '"' + v.replace(/"/g,'""') + '"' : v;
 };
 R.exportBackup = function(){
-  R.download('rebound-backup-' + R.today() + '.json', JSON.stringify(R.S, null, 1), 'application/json');
+  R.download('rebound-' + R.S.mode + '-backup-' + R.today() + '.json', JSON.stringify(R.S, null, 1), 'application/json');
 };
 R.importBackup = function(file, cb){
   var reader = new FileReader();
@@ -104,6 +156,7 @@ R.importBackup = function(file, cb){
     try {
       var data = JSON.parse(reader.result);
       if (!data.profile || !data.rebuild) throw new Error('not a Rebound backup');
+      if ((data.mode || 'eric') !== R.S.mode) throw new Error('wrong profile');
       R.S = data; R.save(); cb(null);
     } catch(e){ cb(e); }
   };
@@ -116,7 +169,7 @@ R.exportProteinCSV = function(){
       rows.push([d, e.t || '', R.csvCell(e.name), e.protein, e.cal || ''].join(','));
     });
   });
-  R.download('rebound-protein-' + R.today() + '.csv', rows.join('\n'), 'text/csv');
+  R.download('rebound-' + R.S.mode + '-protein-' + R.today() + '.csv', rows.join('\n'), 'text/csv');
 };
 R.exportWorkoutCSV = function(){
   var rows = ['date,focus,completed,rating,pain,exercise,sets_done,best_set'];
@@ -134,7 +187,7 @@ R.exportWorkoutCSV = function(){
         (w.pain || []).join(';'), R.csvCell(ex.name), done + '/' + ex.sets.length, R.csvCell(best)].join(','));
     });
   });
-  R.download('rebound-workouts-' + R.today() + '.csv', rows.join('\n'), 'text/csv');
+  R.download('rebound-' + R.S.mode + '-workouts-' + R.today() + '.csv', rows.join('\n'), 'text/csv');
 };
 
 window.R = R;

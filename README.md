@@ -1,6 +1,13 @@
 # Rebound 🏀
 
-Personal workout generator + protein tracker. One user (you), zero services, zero cost. All data lives in your phone's browser — nothing is ever sent anywhere.
+Personal workout generator + protein tracker for Eric and Julia. Zero services, zero cost. All data lives in each phone's browser — nothing is ever sent anywhere.
+
+## Two profiles
+
+First launch on a new device asks "Who's training on this phone?" — the phone remembers forever (switchable in Settings → Switch profile). Each profile's data is stored separately and never mixes. Eric's existing phone auto-claims his profile with all history intact; Julia just opens the same URL on her phone and taps her name.
+
+- **Eric:** weekday gym/home template around basketball nights, injury rebuild ladders, adaptive check-ins and ratings, dunk track.
+- **Julia:** on-demand Full Body A/B/C rotation whenever she trains (2–3x/week), 15–20 min default (length, difficulty, and equipment all adjustable in her Settings), postpartum core ladder that advances every 4 sessions, pelvic-floor-safe exercise selection, left-knee-aware picks, no impact work. Breastfeeding toggle: on = gentle supply-safe deficit with high protein; off = recalculates toward her goal weight instantly.
 
 ## What it does
 
@@ -45,6 +52,3 @@ Settings → **Backup everything (JSON)** — save the file somewhere safe (iClo
 ## A note on pain
 
 The app distinguishes soreness (train around it) from pain (back off). Be honest in the post-workout check — that's the mechanism that gets you from "can't squat pain-free" to dunking. Nothing here is medical advice; sharp pain, dizziness, or chest pain means stop, full stop.
-
-
-

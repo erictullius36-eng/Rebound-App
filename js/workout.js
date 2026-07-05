@@ -6,9 +6,25 @@ R.renderWorkout = function(){
   var d = R.today();
   var w = R.S.workouts[d];
   var el = document.getElementById('screen-workout');
-  if (!w) { el.innerHTML = R.checkinHtml(); return; }
+  if (!w) { el.innerHTML = R.isJulia() ? R.juliaStartHtml() : R.checkinHtml(); return; }
   if (w.completed) { el.innerHTML = R.doneHtml(w); return; }
   el.innerHTML = R.workoutHtml(w);
+};
+
+// ---- Julia: no check-in, one tap to a workout ----
+R.juliaStartHtml = function(){
+  var p = R.S.prefs;
+  var lenLabel = {short:'15–20 min', medium:'25–35 min', long:'40+ min'}[p.length];
+  return '<div class="card">' +
+    '<h2>' + R.juliaNextFocus() + '</h2>' +
+    '<p class="hint">' + lenLabel + ' · ' + (p.equip === 'bw' ? 'no equipment' : 'basement gym') + ' · ' + p.difficulty + ' mode — all adjustable in Settings.</p>' +
+    '<button class="btn primary big" onclick="R.startJulia()">Build my workout</button>' +
+    '</div>';
+};
+R.startJulia = function(){
+  R.S.workouts[R.today()] = R.generateJuliaWorkout(R.today());
+  R.save();
+  R.renderWorkout();
 };
 
 // ---- check-in ----
@@ -51,7 +67,7 @@ R.regenToday = function(){
   }
   delete R.S.workouts[R.today()];
   R.save();
-  R.renderWorkout();
+  if (R.isJulia()) R.startJulia(); else R.renderWorkout();
 };
 
 // ---- the workout ----
@@ -136,6 +152,13 @@ R.startRest = function(i, secs){
 
 // ---- finish & rate ----
 R.showFinish = function(){
+  if (R.isJulia()) { // no rating flow — finish directly
+    var w = R.S.workouts[R.today()];
+    R.finishWorkout(w, 'right', [], []);
+    R.renderWorkout();
+    R.flash('Workout saved 🔥');
+    return;
+  }
   var painChips = [['knees','Knees'],['back','Lower back'],['feet','Feet']]
     .map(function(c){ return '<button class="chip warn" data-pain="' + c[0] + '" onclick="this.classList.toggle(\'on\')">' + c[1] + '</button>'; }).join('');
   document.getElementById('finish-area').innerHTML = '<div class="card">' +
@@ -180,7 +203,15 @@ R.submitFinish = function(){
 R.doneHtml = function(w){
   var doneSets = 0, totalSets = 0;
   w.exercises.forEach(function(ex){ ex.sets.forEach(function(s){ totalSets++; if (s.done) doneSets++; }); });
-  var promos = R.rebuildSummary().filter(function(r){ return !r.locked && r.clean === 0 && r.stage > 0; });
+  if (R.isJulia()) {
+    var pc = R.S.rebuild.ppcore;
+    return '<div class="card center">' +
+      '<div class="big-emoji">✅</div>' +
+      '<h2>' + w.focus + ' — done</h2>' +
+      '<p>' + doneSets + '/' + totalSets + ' sets · ' + R.weekCount() + ' workout' + (R.weekCount() === 1 ? '' : 's') + ' this week</p>' +
+      '<p class="hint">Core ladder: ' + R.PP_STAGE_NAMES[pc.stage] + (pc.stage < R.MAX_STAGE ? ' · ' + (4 - pc.count) + ' session' + (4 - pc.count === 1 ? '' : 's') + ' to the next stage' : '') + '</p>' +
+      '</div>';
+  }
   return '<div class="card center">' +
     '<div class="big-emoji">✅</div>' +
     '<h2>' + w.focus + ' — done</h2>' +

@@ -199,6 +199,18 @@ nav button {
 nav button .ni { font-size: 20px; }
 nav button.on { color: var(--blue); }
 
+/* profile picker */
+#picker {
+  position: fixed; inset: 0; z-index: 50;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.picker-inner { width: 100%; max-width: 340px; text-align: center; }
+.big-logo { font-size: 30px; display: block; margin-bottom: 24px; }
+#picker h2 { margin-bottom: 20px; }
+#picker .btn.julia { background: #16a34a; border-color: #16a34a; }
+
 /* toast */
 #toast {
   position: fixed; bottom: 86px; left: 50%; transform: translateX(-50%) translateY(10px);

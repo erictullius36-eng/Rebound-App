@@ -47,6 +47,7 @@ R.finishWorkout = function(w, rating, painAreas, painExIds){
 
   Object.keys(trained).forEach(function(pat){
     var rb = R.S.rebuild[pat];
+    if (!rb) return; // pattern not tracked in this profile
     if (painPatterns[pat]) {
       rb.stage = Math.max(0, rb.stage - 1);
       rb.clean = 0;
@@ -66,8 +67,17 @@ R.finishWorkout = function(w, rating, painAreas, painExIds){
     }
   });
 
+  // Julia's postpartum core ladder: advance one stage every 4 completed sessions (no ratings needed)
+  if (R.isJulia()) {
+    var pc = R.S.rebuild.ppcore;
+    pc.count++;
+    if (pc.count >= 4 && pc.stage < R.MAX_STAGE) { pc.stage++; pc.count = 0; }
+  }
+
   R.save();
 };
+
+R.PP_STAGE_NAMES = ['Reconnect (breath & deep core)','Foundation (anti-rotation basics)','Strong (planks & holds)','Full (loaded core, everything unlocked)'];
 
 // human-readable rebuild summary for settings + promotions worth celebrating
 R.rebuildSummary = function(){
