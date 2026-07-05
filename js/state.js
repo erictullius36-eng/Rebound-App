@@ -41,7 +41,16 @@ R.defaults = function(mode){
 // Returns state, or null if this device hasn't picked a profile yet (show picker).
 R.load = function(){
   var mode = localStorage.getItem(R.PROFILE_KEY);
-  if (!mode && localStorage.getItem('rebound_v1')) mode = 'eric'; // legacy data = Eric's phone
+  if (!mode) {
+    // Legacy auto-claim: only treat v1 data as Eric's if it shows real use.
+    // (A phone that merely OPENED the old version once has an empty v1 shell — ignore it and show the picker.)
+    try {
+      var legacy = JSON.parse(localStorage.getItem('rebound_v1') || 'null');
+      if (legacy && (Object.keys(legacy.workouts || {}).length ||
+                     Object.keys(legacy.proteinLog || {}).length ||
+                     (legacy.foods || []).length)) mode = 'eric';
+    } catch(e){}
+  }
   if (!mode) return null;
   localStorage.setItem(R.PROFILE_KEY, mode);
   R.KEY = R.keyFor(mode);
