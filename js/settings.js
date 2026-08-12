@@ -16,8 +16,8 @@ R.renderSettings = function(){
   var rebuild = R.rebuildSummary().map(function(r){
     var dots = '';
     for (var s = 0; s <= R.MAX_STAGE; s++) dots += '<span class="dot' + (s <= r.stage && !r.locked ? ' fill' : '') + '"></span>';
-    return '<div class="rb-row"><div><div class="rb-name">' + r.label + (r.locked ? ' üîí' : '') + '</div>' +
-      '<div class="rb-stage">' + r.stageName + (r.locked ? '' : ' ¬∑ ' + r.clean + '/' + R.CLEAN_TO_ADVANCE + ' clean sessions to advance') + '</div></div>' +
+    return '<div class="rb-row"><div><div class="rb-name">' + r.label + (r.locked ? ' 🔒' : '') + '</div>' +
+      '<div class="rb-stage">' + r.stageName + (r.locked ? '' : ' · ' + r.clean + '/' + R.CLEAN_TO_ADVANCE + ' clean sessions to advance') + '</div></div>' +
       '<div class="dots">' + dots + '</div></div>';
   }).join('');
 
@@ -49,11 +49,11 @@ R.renderSettings = function(){
     R.hiddenCard() +
     '<div class="card">' +
       '<h3>Data</h3>' +
-      '<button class="btn" onclick="R.exportBackup()">‚¨áÔ∏é Backup everything (JSON)</button>' +
-      '<label class="btn file-btn">‚¨ÜÔ∏é Restore backup<input type="file" accept=".json,application/json" onchange="R.doImport(this)"></label>' +
-      '<button class="btn" onclick="R.exportWorkoutCSV()">‚¨áÔ∏é Workouts CSV</button>' +
-      '<button class="btn" onclick="R.exportProteinCSV()">‚¨áÔ∏é Protein CSV</button>' +
-      '<p class="hint">Data lives only in this browser. Download a backup monthly ‚Äî it restores everything on any phone.</p>' +
+      '<button class="btn" onclick="R.exportBackup()">⬇︎ Backup everything (JSON)</button>' +
+      '<label class="btn file-btn">⬆︎ Restore backup<input type="file" accept=".json,application/json" onchange="R.doImport(this)"></label>' +
+      '<button class="btn" onclick="R.exportWorkoutCSV()">⬇︎ Workouts CSV</button>' +
+      '<button class="btn" onclick="R.exportProteinCSV()">⬇︎ Protein CSV</button>' +
+      '<p class="hint">Data lives only in this browser. Download a backup monthly — it restores everything on any phone.</p>' +
       '<button class="btn ghost" onclick="R.switchProfile()">Switch profile (Eric / Julia)</button>' +
       '<button class="btn danger" onclick="R.wipe()">Erase all data</button>' +
     '</div>';
@@ -73,7 +73,7 @@ R.renderJuliaSettings = function(){
 
   document.getElementById('screen-settings').innerHTML =
     '<div class="card form">' +
-      '<h3>Profile ‚Äî Julia</h3>' +
+      '<h3>Profile — Julia</h3>' +
       '<label>Current weight (lb)<input id="st-weight" type="number" inputmode="decimal" value="' + p.weightLbs + '"></label>' +
       '<label>Goal weight (lb)<input id="st-goal" type="number" inputmode="decimal" value="' + p.goalWeight + '"></label>' +
       '<button class="btn primary" onclick="R.saveProfileJulia()">Save & recalc targets</button>' +
@@ -95,29 +95,29 @@ R.renderJuliaSettings = function(){
     '</div>' +
     '<div class="card">' +
       '<h3>Difficulty</h3><div class="chip-row">' + chips([['gentle','Gentle'],['standard','Standard'],['challenge','Challenge']], prefs.difficulty, 'R.setDifficulty') + '</div>' +
-      '<p class="hint">Gentle = 2 sets, easiest variants, extra knee-friendly. Bump it whenever a session feels easy ‚Äî it applies to the very next workout.</p>' +
-      '<h3>Session length</h3><div class="chip-row">' + chips([['short','15‚Äì20 min'],['medium','25‚Äì35 min'],['long','40+ min']], prefs.length, 'R.setLength') + '</div>' +
+      '<p class="hint">Gentle = 2 sets, easiest variants, extra knee-friendly. Bump it whenever a session feels easy — it applies to the very next workout.</p>' +
+      '<h3>Session length</h3><div class="chip-row">' + chips([['short','15–20 min'],['medium','25–35 min'],['long','40+ min']], prefs.length, 'R.setLength') + '</div>' +
       '<h3>Equipment</h3><div class="chip-row">' + chips([['home','Basement gym'],['bw','No equipment']], prefs.equip, 'R.setEquip') + '</div>' +
     '</div>' +
     '<div class="card">' +
       '<h3>Postpartum core ladder</h3>' +
       '<div class="rb-row"><div><div class="rb-name">Core rebuild</div>' +
-      '<div class="rb-stage">' + R.PP_STAGE_NAMES[pc.stage] + (pc.stage < R.MAX_STAGE ? ' ¬∑ ' + (4 - pc.count) + ' sessions to next stage' : '') + '</div></div>' +
+      '<div class="rb-stage">' + R.PP_STAGE_NAMES[pc.stage] + (pc.stage < R.MAX_STAGE ? ' · ' + (4 - pc.count) + ' sessions to next stage' : '') + '</div></div>' +
       '<div class="dots">' + dots + '</div></div>' +
       '<div class="row2">' +
-        '<button class="btn" onclick="R.coreStageAdj(-1)">‚àí Step back</button>' +
+        '<button class="btn" onclick="R.coreStageAdj(-1)">− Step back</button>' +
         '<button class="btn" onclick="R.coreStageAdj(1)">+ Step up</button>' +
       '</div>' +
-      '<p class="hint">Advances automatically every 4 workouts. If anything feels off in your core or pelvic floor (pressure, doming, leaking), step back a stage ‚Äî no shame, that\'s the system working.</p>' +
+      '<p class="hint">Advances automatically every 4 workouts. If anything feels off in your core or pelvic floor (pressure, doming, leaking), step back a stage — no shame, that\'s the system working.</p>' +
     '</div>' +
     R.hiddenCard() +
     '<div class="card">' +
       '<h3>Data</h3>' +
-      '<button class="btn" onclick="R.exportBackup()">‚¨áÔ∏é Backup everything (JSON)</button>' +
-      '<label class="btn file-btn">‚¨ÜÔ∏é Restore backup<input type="file" accept=".json,application/json" onchange="R.doImport(this)"></label>' +
-      '<button class="btn" onclick="R.exportWorkoutCSV()">‚¨áÔ∏é Workouts CSV</button>' +
-      '<button class="btn" onclick="R.exportProteinCSV()">‚¨áÔ∏é Protein CSV</button>' +
-      '<p class="hint">Data lives only in this browser ‚Äî download a backup monthly.</p>' +
+      '<button class="btn" onclick="R.exportBackup()">⬇︎ Backup everything (JSON)</button>' +
+      '<label class="btn file-btn">⬆︎ Restore backup<input type="file" accept=".json,application/json" onchange="R.doImport(this)"></label>' +
+      '<button class="btn" onclick="R.exportWorkoutCSV()">⬇︎ Workouts CSV</button>' +
+      '<button class="btn" onclick="R.exportProteinCSV()">⬇︎ Protein CSV</button>' +
+      '<p class="hint">Data lives only in this browser — download a backup monthly.</p>' +
       '<button class="btn ghost" onclick="R.switchProfile()">Switch profile (Eric / Julia)</button>' +
       '<button class="btn danger" onclick="R.wipe()">Erase all data</button>' +
     '</div>';
@@ -129,7 +129,7 @@ R.saveProfileJulia = function(){
   R.refreshTargets();
   R.save();
   R.renderSettings();
-  R.flash('Saved ‚Äî targets updated');
+  R.flash('Saved — targets updated');
 };
 R.toggleNursing = function(on){
   R.S.nursing = on;
@@ -150,21 +150,21 @@ R.coreStageAdj = function(dir){
   R.renderSettings();
 };
 R.switchProfile = function(){
-  if (!confirm('Switch profile? Your data stays saved on this phone ‚Äî this just changes who\'s active.')) return;
+  if (!confirm('Switch profile? Your data stays saved on this phone — this just changes who\'s active.')) return;
   localStorage.removeItem(R.PROFILE_KEY);
   location.reload();
 };
 
-// hidden ("unliked") exercises ‚Äî shared by both profiles' settings screens
+// hidden ("unliked") exercises — shared by both profiles' settings screens
 R.hiddenCard = function(){
   if (!R.S.banned.length) return '';
   return '<div class="card"><h3>Hidden exercises</h3>' +
     R.S.banned.map(function(id){
       var e = R.EX[id];
       return '<div class="entry-row"><span class="e-name">' + R.esc(e ? e.n : id) + '</span>' +
-        '<button class="e-del" onclick="R.unban(\'' + id + '\')" title="Restore">‚Ü©Ô∏é</button></div>';
+        '<button class="e-del" onclick="R.unban(\'' + id + '\')" title="Restore">↩︎</button></div>';
     }).join('') +
-    '<p class="hint">üëé on any exercise hides it from the generator forever. Restore here.</p></div>';
+    '<p class="hint">👎 on any exercise hides it from the generator forever. Restore here.</p></div>';
 };
 R.unban = function(id){
   R.S.banned = R.S.banned.filter(function(b){ return b !== id; });
@@ -181,7 +181,7 @@ R.saveProfile = function(){
   R.refreshTargets();
   R.save();
   R.renderSettings();
-  R.flash('Saved ‚Äî targets updated');
+  R.flash('Saved — targets updated');
 };
 R.saveTargets = function(){
   var t = R.S.targets;
@@ -213,13 +213,13 @@ R.doImport = function(input){
   if (!input.files || !input.files[0]) return;
   R.importBackup(input.files[0], function(err){
     if (err) { R.flash('That file isn\'t a Rebound backup'); return; }
-    R.flash('Backup restored ‚úì');
+    R.flash('Backup restored ✓');
     R.showScreen('dash');
   });
 };
 R.wipe = function(){
   if (!confirm('Erase ALL workouts, protein logs, and settings? This cannot be undone.')) return;
-  if (!confirm('Last chance ‚Äî download a backup first?  OK erases everything.')) return;
+  if (!confirm('Last chance — download a backup first?  OK erases everything.')) return;
   localStorage.removeItem(R.KEY);
   R.S = R.load();
   R.refreshTargets();

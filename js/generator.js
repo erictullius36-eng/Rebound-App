@@ -99,9 +99,9 @@ R.juliaCompletedCount = function(){
 
 R.juliaTemplate = function(rot){
   var T = [
-    {focus:'Full Body A ‚Äî Lower Focus', slots:['squat','lunge','ppcore'], extra:['hinge','ham','calf_foot']},
-    {focus:'Full Body B ‚Äî Upper Focus', slots:['push_h','pull_h','ppcore'], extra:['push_v','bi','tri']},
-    {focus:'Full Body C ‚Äî Move & Core', slots:['condition','ppcore','mobility'], extra:['ppcore','mobility','calf_foot']}
+    {focus:'Full Body A — Lower Focus', slots:['squat','lunge','ppcore'], extra:['hinge','ham','calf_foot']},
+    {focus:'Full Body B — Upper Focus', slots:['push_h','pull_h','ppcore'], extra:['push_v','bi','tri']},
+    {focus:'Full Body C — Move & Core', slots:['condition','ppcore','mobility'], extra:['ppcore','mobility','calf_foot']}
   ];
   return T[rot % 3];
 };
@@ -136,11 +136,11 @@ R.generateJuliaWorkout = function(dateStr){
   });
 
   var notes = [];
-  if (prefs.difficulty === 'gentle') notes.push('Rebuilding phase ‚Äî smooth reps, full exhales, nothing to prove. Bump difficulty in Settings whenever you\'re ready.');
+  if (prefs.difficulty === 'gentle') notes.push('Rebuilding phase — smooth reps, full exhales, nothing to prove. Bump difficulty in Settings whenever you\'re ready.');
   var wu = prefs.equip === 'bw'
-    ? ['March in place ‚Äî 2 min', '360 breathing ‚Äî 5 slow breaths', 'Hip circles ‚Äî 8 each way', 'Bodyweight glute bridge ‚Äî 10']
-    : ['Easy bike spin ‚Äî 3 min', '360 breathing ‚Äî 5 slow breaths', 'Leg swings ‚Äî 10 each direction', 'Bodyweight glute bridge ‚Äî 10'];
-  var cd = ['Hip flexor stretch ‚Äî 30s each side', 'Calf stretch ‚Äî 30s each side', '360 breathing ‚Äî 5 slow breaths to finish'];
+    ? ['March in place — 2 min', '360 breathing — 5 slow breaths', 'Hip circles — 8 each way', 'Bodyweight glute bridge — 10']
+    : ['Easy bike spin — 3 min', '360 breathing — 5 slow breaths', 'Leg swings — 10 each direction', 'Bodyweight glute bridge — 10'];
+  var cd = ['Hip flexor stretch — 30s each side', 'Calf stretch — 30s each side', '360 breathing — 5 slow breaths to finish'];
 
   return {
     date: dateStr, focus: t.focus, loc: prefs.equip === 'bw' ? 'bw' : 'home', ball: false,
@@ -194,15 +194,15 @@ R.buildExercise = function(e, opts){
 };
 
 R.warmupFor = function(wd, loc){
-  var base = [loc === 'home' ? 'Easy bike spin ‚Äî 4 min' : 'Easy bike or incline walk ‚Äî 4 min'];
-  if (wd === 3) return base.concat(['Leg swings ‚Äî 10 each direction','Bodyweight glute bridge ‚Äî 12','Ankle rocks ‚Äî 10 each side','Wall sit ‚Äî 20s primer']);
-  if ([1,2,4,5].indexOf(wd) >= 0) return base.concat(['Arm circles ‚Äî 10 each way','Band/cable pull-apart ‚Äî 15','Push-up to down-dog ‚Äî 6','2 light warm-up sets of your first lift']);
-  return ['Easy movement ‚Äî 3 min','Cat-camel ‚Äî 8','Hip circles ‚Äî 8 each way'];
+  var base = [loc === 'home' ? 'Easy bike spin — 4 min' : 'Easy bike or incline walk — 4 min'];
+  if (wd === 3) return base.concat(['Leg swings — 10 each direction','Bodyweight glute bridge — 12','Ankle rocks — 10 each side','Wall sit — 20s primer']);
+  if ([1,2,4,5].indexOf(wd) >= 0) return base.concat(['Arm circles — 10 each way','Band/cable pull-apart — 15','Push-up to down-dog — 6','2 light warm-up sets of your first lift']);
+  return ['Easy movement — 3 min','Cat-camel — 8','Hip circles — 8 each way'];
 };
 R.cooldownFor = function(wd){
-  if (wd === 3) return ['Couch stretch ‚Äî 45s each side','Hamstring floss ‚Äî 10 each leg','Child‚Äôs pose breathing ‚Äî 1 min'];
-  if ([1,2,4,5].indexOf(wd) >= 0) return ['Doorway/chest stretch ‚Äî 30s each side','Thoracic open book ‚Äî 8 each side','Long exhale breathing ‚Äî 1 min'];
-  return ['Calf stretch ‚Äî 30s each side','Hip flexor stretch ‚Äî 30s each side','Child‚Äôs pose breathing ‚Äî 1 min'];
+  if (wd === 3) return ['Couch stretch — 45s each side','Hamstring floss — 10 each leg','Child’s pose breathing — 1 min'];
+  if ([1,2,4,5].indexOf(wd) >= 0) return ['Doorway/chest stretch — 30s each side','Thoracic open book — 8 each side','Long exhale breathing — 1 min'];
+  return ['Calf stretch — 30s each side','Hip flexor stretch — 30s each side','Child’s pose breathing — 1 min'];
 };
 
 R.generateWorkout = function(dateStr, checkin, flexType){
@@ -242,9 +242,9 @@ R.generateWorkout = function(dateStr, checkin, flexType){
   });
 
   var notes = [];
-  if (t.ball) notes.push('üèÄ Ball this morning ‚Äî free cardio. Lift as planned.');
-  if (reentry) notes.push('Been ' + gap + ' days ‚Äî this is a lighter re-entry session on purpose. Ease back in.');
-  if (lowEnergy) notes.push('Low energy day ‚Äî volume trimmed. Showing up still counts.');
+  if (t.ball) notes.push('🏀 Ball this morning — free cardio. Lift as planned.');
+  if (reentry) notes.push('Been ' + gap + ' days — this is a lighter re-entry session on purpose. Ease back in.');
+  if (lowEnergy) notes.push('Low energy day — volume trimmed. Showing up still counts.');
   if (checkin.sore.knees || checkin.sore.back || checkin.sore.feet) notes.push('Sore-area exercises swapped out for today.');
 
   return {

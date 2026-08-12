@@ -29,10 +29,10 @@ R.EXDB = [
   {id:'hg4', n:'DB Romanian Deadlift', eq:'b', pat:'hinge', minStage:2, ks:0, bs:2, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Hips back, flat back, feel hamstrings, stop before back rounds.', subs:['hg3','hg5']},
   {id:'hg5', n:'Barbell RDL', eq:'b', pat:'hinge', minStage:3, ks:0, bs:2, fs:0, type:'w', sets:3, lo:6, hi:10, rest:120, note:'Brace. If the back complains, drop weight, not form.', subs:['hg4','hg6']},
   {id:'hg6', n:'Hip Thrust (loaded)', eq:'b', pat:'hinge', minStage:2, ks:1, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Shoulders on bench, DB or bar on hips. Glute power = jump power.', subs:['hg4','hg3']},
-  {id:'hg7', n:'Back Extension (45¬∞)', eq:'g', pat:'hinge', minStage:1, ks:0, bs:1, fs:0, type:'bw', sets:3, lo:10, hi:15, rest:75, note:'Smooth, no jerking. Squeeze glutes, not lower back.', subs:['hg3','hg4']},
+  {id:'hg7', n:'Back Extension (45°)', eq:'g', pat:'hinge', minStage:1, ks:0, bs:1, fs:0, type:'bw', sets:3, lo:10, hi:15, rest:75, note:'Smooth, no jerking. Squeeze glutes, not lower back.', subs:['hg3','hg4']},
   {id:'hg8', n:'Trap Bar Deadlift', eq:'g', pat:'hinge', minStage:3, ks:1, bs:3, fs:1, type:'w', sets:3, lo:5, hi:8, rest:180, note:'Only when the back is fully trusting. Brace like it matters.', subs:['hg5','hg6']},
   // ---- HAMSTRING ISOLATION ----
-  {id:'hm1', n:'Seated Leg Curl', eq:'g', pat:'ham', ks:1, bs:0, fs:0, type:'w', sets:3, lo:10, hi:15, rest:75, note:'Control the return ‚Äî hamstrings protect knees.', subs:['hm2','hm3']},
+  {id:'hm1', n:'Seated Leg Curl', eq:'g', pat:'ham', ks:1, bs:0, fs:0, type:'w', sets:3, lo:10, hi:15, rest:75, note:'Control the return — hamstrings protect knees.', subs:['hm2','hm3']},
   {id:'hm2', n:'Lying Leg Curl', eq:'g', pat:'ham', ks:1, bs:0, fs:0, type:'w', sets:3, lo:10, hi:15, rest:75, note:'Hips down, slow lowering.', subs:['hm1','hm3']},
   {id:'hm3', n:'Slider/Towel Leg Curl', eq:'h', pat:'ham', ks:1, bs:0, fs:0, type:'bw', sets:3, lo:6, hi:12, rest:75, note:'Bridge up, slide heels out slow, pull back in. Brutal and free.', subs:['hm1','hg4']},
   {id:'hm4', n:'Single-Leg RDL (light)', eq:'b', pat:'ham', ks:0, bs:1, fs:1, type:'w', sets:3, lo:8, hi:12, rest:75, note:'Balance + hamstring. Hold something if wobbly. Each leg.', subs:['hg4','hm3']},
@@ -47,7 +47,7 @@ R.EXDB = [
   {id:'ph1', n:'Machine Chest Press', eq:'g', pat:'push_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Smooth ramp back into pressing post-surgery.', subs:['ph2','ph6']},
   {id:'ph2', n:'DB Bench Press', eq:'b', pat:'push_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Full control, no bouncing.', subs:['ph1','ph3']},
   {id:'ph3', n:'Barbell Bench Press', eq:'b', pat:'push_h', ks:0, bs:0, fs:0, type:'w', sets:4, lo:5, hi:8, rest:150, note:'Feet planted, shoulder blades tucked.', subs:['ph2','ph1']},
-  {id:'ph4', n:'Incline DB Press', eq:'b', pat:'push_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'30-45¬∞ incline.', subs:['ph2','ph5']},
+  {id:'ph4', n:'Incline DB Press', eq:'b', pat:'push_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'30-45° incline.', subs:['ph2','ph5']},
   {id:'ph5', n:'Cable Fly', eq:'b', pat:'push_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:12, hi:15, rest:60, note:'Big stretch, soft elbows, squeeze.', subs:['ph4','ph6']},
   {id:'ph6', n:'Push-Up', eq:'b', pat:'push_h', ks:0, bs:0, fs:0, type:'bw', sets:3, lo:10, hi:20, rest:60, note:'Body in one line. Elevate hands to make easier.', subs:['ph1','ph2']},
   // ---- VERTICAL PUSH / SHOULDERS ----
@@ -62,7 +62,7 @@ R.EXDB = [
   {id:'puv3', n:'Assisted Pull-Up', eq:'g', pat:'pull_v', ks:0, bs:0, fs:0, type:'w', sets:3, lo:6, hi:10, rest:120, note:'Machine or band. Chin over bar, control down.', subs:['puv1','puv2']},
   // ---- HORIZONTAL PULL ----
   {id:'puh1', n:'Seated Cable Row', eq:'b', pat:'pull_h', ks:0, bs:1, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Chest tall, squeeze shoulder blades.', subs:['puh2','puh3']},
-  {id:'puh2', n:'Chest-Supported DB Row', eq:'b', pat:'pull_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Chest on incline bench ‚Äî zero back stress.', subs:['puh1','puh4']},
+  {id:'puh2', n:'Chest-Supported DB Row', eq:'b', pat:'pull_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Chest on incline bench — zero back stress.', subs:['puh1','puh4']},
   {id:'puh3', n:'Machine Row', eq:'g', pat:'pull_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'', subs:['puh1','puh2']},
   {id:'puh4', n:'One-Arm DB Row', eq:'b', pat:'pull_h', ks:0, bs:1, fs:0, type:'w', sets:3, lo:8, hi:12, rest:75, note:'Hand on bench, flat back. Each arm.', subs:['puh2','puh1']},
   {id:'puh5', n:'Doorway Towel Row', eq:'h', pat:'pull_h', ks:0, bs:0, fs:0, type:'bw', sets:3, lo:10, hi:15, rest:60, note:'Towel around a door handle or sturdy rail, lean back, row your chest to your hands. Walk feet forward to make it harder.', subs:['puh1','puh2']},
@@ -83,14 +83,14 @@ R.EXDB = [
   {id:'co3', n:'Side Plank', eq:'b', pat:'core', ks:0, bs:0, fs:0, type:'iso', sets:3, lo:20, hi:45, rest:45, note:'Straight line, hips high. Each side. Gold for the lower back.', subs:['co4','co2']},
   {id:'co4', n:'Front Plank', eq:'b', pat:'core', ks:0, bs:0, fs:0, type:'iso', sets:3, lo:30, hi:60, rest:45, note:'Glutes squeezed, ribs down.', subs:['co3','co1']},
   {id:'co5', n:'Pallof Press', eq:'b', pat:'core', ks:0, bs:0, fs:0, type:'w', sets:3, lo:10, hi:12, rest:45, note:'Cable at chest, press out, resist the twist. Each side.', subs:['co3','co6']},
-  {id:'co6', n:'Suitcase Carry', eq:'b', pat:'core', ks:0, bs:1, fs:1, type:'iso', sets:3, lo:30, hi:45, rest:60, note:'Heavy DB one side, walk tall, don‚Äôt lean. Each side.', subs:['co5','co3']},
+  {id:'co6', n:'Suitcase Carry', eq:'b', pat:'core', ks:0, bs:1, fs:1, type:'iso', sets:3, lo:30, hi:45, rest:60, note:'Heavy DB one side, walk tall, don’t lean. Each side.', subs:['co5','co3']},
   {id:'co9', n:'McGill Curl-Up', eq:'b', pat:'core', ks:0, bs:0, fs:0, type:'bw', sets:3, lo:6, hi:10, rest:45, note:'Hands under low back, tiny curl, hold 8s. Back-pain-proof abs.', subs:['co1','co2']},
   // ---- CALF / FOOT / TIBIALIS ----
   {id:'cf1', n:'Standing Calf Raise', eq:'b', pat:'calf_foot', ks:0, bs:0, fs:2, type:'w', sets:3, lo:10, hi:15, rest:60, note:'Full stretch at bottom, pause at top. Slow = tendon-friendly.', subs:['cf5','cf2']},
   {id:'cf2', n:'Seated Calf Raise', eq:'g', pat:'calf_foot', ks:0, bs:0, fs:1, type:'w', sets:3, lo:12, hi:15, rest:60, note:'', subs:['cf1','cf5']},
   {id:'cf3', n:'Tibialis Raise', eq:'b', pat:'calf_foot', ks:0, bs:0, fs:1, type:'bw', sets:3, lo:15, hi:25, rest:45, note:'Heels on ground, lift toes. Bulletproofs shins/feet for ball.', subs:['cf4','cf1']},
   {id:'cf4', n:'Short Foot / Toe Yoga', eq:'b', pat:'calf_foot', ks:0, bs:0, fs:0, type:'iso', sets:3, lo:15, hi:30, rest:30, note:'Grip floor with arch without curling toes. Rebuilds the feet.', subs:['cf3','cf1']},
-  {id:'cf5', n:'Single-Leg Calf Raise (bent knee)', eq:'b', pat:'calf_foot', ks:1, bs:0, fs:2, type:'bw', sets:3, lo:8, hi:15, rest:60, note:'Knee slightly bent ‚Äî hits soleus, protects the achilles. Each leg.', subs:['cf1','cf3']},
+  {id:'cf5', n:'Single-Leg Calf Raise (bent knee)', eq:'b', pat:'calf_foot', ks:1, bs:0, fs:2, type:'bw', sets:3, lo:8, hi:15, rest:60, note:'Knee slightly bent — hits soleus, protects the achilles. Each leg.', subs:['cf1','cf3']},
   // ---- CONDITIONING (no running, no burpees) ----
   {id:'cd1', n:'Zone-2 Bike', eq:'b', pat:'condition', ks:1, bs:0, fs:0, type:'time', sets:1, lo:20, hi:35, rest:0, note:'Conversational pace. You should be able to talk. Fat-loss engine.', subs:['cd2','cd5']},
   {id:'cd2', n:'Bike Intervals', eq:'b', pat:'condition', ks:1, bs:0, fs:0, type:'time', sets:1, lo:15, hi:20, rest:0, note:'30s hard / 90s easy, repeat. Game-shape without the pounding.', subs:['cd1','cd5']},
@@ -98,40 +98,40 @@ R.EXDB = [
   {id:'cd5', n:'Easy Spin (recovery)', eq:'b', pat:'condition', ks:0, bs:0, fs:0, type:'time', sets:1, lo:10, hi:20, rest:0, note:'Very light. Blood flow, not effort.', subs:['cd1','cd3']},
   // ---- MOBILITY / RECOVERY ----
   {id:'mo1', n:'90/90 Hip Switch', eq:'b', pat:'mobility', ks:1, bs:0, fs:0, type:'bw', sets:2, lo:8, hi:10, rest:30, note:'Slow transitions, tall chest.', subs:['mo8','mo2']},
-  {id:'mo2', n:'Couch Stretch', eq:'b', pat:'mobility', ks:1, bs:0, fs:0, type:'iso', sets:2, lo:45, hi:60, rest:30, note:'Rear foot on couch/wall. Quads + hip flexors ‚Äî knees thank you. Each side.', subs:['mo8','mo1']},
+  {id:'mo2', n:'Couch Stretch', eq:'b', pat:'mobility', ks:1, bs:0, fs:0, type:'iso', sets:2, lo:45, hi:60, rest:30, note:'Rear foot on couch/wall. Quads + hip flexors — knees thank you. Each side.', subs:['mo8','mo1']},
   {id:'mo3', n:'Hamstring Floss', eq:'b', pat:'mobility', ks:0, bs:0, fs:0, type:'bw', sets:2, lo:10, hi:12, rest:30, note:'Lying down, leg up, extend and bend. Each leg.', subs:['mo1','mo5']},
   {id:'mo4', n:'Ankle Dorsiflexion Rocks', eq:'b', pat:'mobility', ks:0, bs:0, fs:1, type:'bw', sets:2, lo:10, hi:15, rest:30, note:'Knee over toes, heel down. Ankle range = knee relief. Each side.', subs:['mo7','mo1']},
   {id:'mo5', n:'Cat-Camel', eq:'b', pat:'mobility', ks:0, bs:0, fs:0, type:'bw', sets:2, lo:8, hi:10, rest:30, note:'Gentle, pain-free spine waves. No forcing.', subs:['mo6','mo9']},
   {id:'mo6', n:'Thoracic Rotation (open book)', eq:'b', pat:'mobility', ks:0, bs:0, fs:0, type:'bw', sets:2, lo:8, hi:10, rest:30, note:'Upper back rotates, lower back stays. Each side.', subs:['mo5','mo9']},
   {id:'mo7', n:'Calf Stretch on Step', eq:'b', pat:'mobility', ks:0, bs:0, fs:1, type:'iso', sets:2, lo:30, hi:45, rest:30, note:'Straight then bent knee. Each side.', subs:['mo4','mo3']},
   {id:'mo8', n:'Hip Flexor Stretch (half-kneel)', eq:'b', pat:'mobility', ks:1, bs:0, fs:0, type:'iso', sets:2, lo:30, hi:45, rest:30, note:'Glute squeezed, tall. Desk-job antidote. Each side.', subs:['mo2','mo1']},
-  {id:'mo9', n:'Child‚Äôs Pose Breathing', eq:'b', pat:'mobility', ks:1, bs:0, fs:0, type:'iso', sets:2, lo:45, hi:60, rest:30, note:'Long exhales. Decompress.', subs:['mo5','mo6']},
+  {id:'mo9', n:'Child’s Pose Breathing', eq:'b', pat:'mobility', ks:1, bs:0, fs:0, type:'iso', sets:2, lo:45, hi:60, rest:30, note:'Long exhales. Decompress.', subs:['mo5','mo6']},
   {id:'mo10', n:'Vibration Plate Recovery Stand', eq:'h', pat:'mobility', ks:0, bs:0, fs:0, type:'time', sets:1, lo:5, hi:10, rest:0, note:'Soft knees on the plate. Circulation for legs and feet.', subs:['mo9','mo7']},
   {id:'mo11', n:'Foam Roll Quads/Calves', eq:'g', pat:'mobility', ks:0, bs:0, fs:0, type:'time', sets:1, lo:5, hi:8, rest:0, note:'Slow passes, breathe.', subs:['mo2','mo7']},
   // ---- v4 HYPERTROPHY ADDITIONS ----
-  {id:'ph7', n:'Incline Barbell Press', eq:'g', pat:'push_h', ks:0, bs:0, fs:0, type:'w', sets:4, lo:6, hi:10, rest:120, note:'30¬∞ incline, controlled to the upper chest.', subs:['ph4','ph3']},
+  {id:'ph7', n:'Incline Barbell Press', eq:'g', pat:'push_h', ks:0, bs:0, fs:0, type:'w', sets:4, lo:6, hi:10, rest:120, note:'30° incline, controlled to the upper chest.', subs:['ph4','ph3']},
   {id:'ph8', n:'Chest Dip', eq:'g', pat:'push_h', ks:0, bs:0, fs:0, type:'bw', sets:3, lo:6, hi:12, rest:90, note:'Lean forward, elbows out slightly. Add weight when 12 gets easy.', subs:['ph3','ph9']},
   {id:'ph9', n:'Pec Deck / Machine Fly', eq:'g', pat:'push_h', ks:0, bs:0, fs:0, type:'w', sets:3, lo:12, hi:15, rest:60, note:'Big stretch, 1-sec squeeze. Pump work.', subs:['ph5','ph1']},
   {id:'ph10', n:'Decline Push-Up', eq:'b', pat:'push_h', ks:0, bs:0, fs:0, type:'bw', sets:3, lo:10, hi:20, rest:60, note:'Feet on bench. Great superset finisher.', subs:['ph6','ph5']},
   {id:'puv4', n:'Chin-Up', eq:'g', pat:'pull_v', ks:0, bs:0, fs:0, type:'bw', sets:3, lo:6, hi:10, rest:120, note:'Underhand, chest to bar. Lats + biceps in one move.', subs:['puv3','puv1']},
   {id:'puv5', n:'Straight-Arm Pulldown', eq:'b', pat:'pull_v', ks:0, bs:0, fs:0, type:'w', sets:3, lo:12, hi:15, rest:60, note:'Arms nearly straight, sweep the bar to your hips. Pure lats.', subs:['puv1','puv2']},
-  {id:'puh6', n:'T-Bar / Landmine Row', eq:'g', pat:'pull_h', ks:0, bs:2, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Chest up, drive elbows back. Heavy back builder ‚Äî brace.', subs:['puh1','puh3']},
+  {id:'puh6', n:'T-Bar / Landmine Row', eq:'g', pat:'pull_h', ks:0, bs:2, fs:0, type:'w', sets:3, lo:8, hi:12, rest:90, note:'Chest up, drive elbows back. Heavy back builder — brace.', subs:['puh1','puh3']},
   {id:'pv6', n:'Cable Y-Raise', eq:'b', pat:'push_v', ks:0, bs:0, fs:0, type:'w', sets:3, lo:12, hi:15, rest:60, note:'Raise to a Y overhead. Shoulder health + caps.', subs:['pv3','pv4']},
   {id:'pv7', n:'DB Front Raise', eq:'b', pat:'push_v', ks:0, bs:0, fs:0, type:'w', sets:3, lo:12, hi:15, rest:60, note:'To eye level, no swinging.', subs:['pv4','pv3']},
   {id:'tp1', n:'DB Shrug', eq:'b', pat:'traps', ks:0, bs:0, fs:0, type:'w', sets:3, lo:10, hi:15, rest:60, note:'Straight up, 1-sec hold at the top. No rolling.', subs:['tp2','pa1']},
   {id:'tp2', n:'Barbell Shrug', eq:'b', pat:'traps', ks:0, bs:1, fs:0, type:'w', sets:3, lo:10, hi:15, rest:75, note:'Heavy but strict.', subs:['tp1','pa1']},
-  {id:'bi4', n:'Preacher Curl', eq:'g', pat:'bi', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:60, note:'Full stretch at the bottom ‚Äî no bounce.', subs:['bi1','bi3']},
-  {id:'bi5', n:'Incline DB Curl', eq:'b', pat:'bi', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:60, note:'Lying back on incline, arms hang ‚Äî brutal stretch.', subs:['bi1','bi2']},
+  {id:'bi4', n:'Preacher Curl', eq:'g', pat:'bi', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:60, note:'Full stretch at the bottom — no bounce.', subs:['bi1','bi3']},
+  {id:'bi5', n:'Incline DB Curl', eq:'b', pat:'bi', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:60, note:'Lying back on incline, arms hang — brutal stretch.', subs:['bi1','bi2']},
   {id:'tr4', n:'Close-Grip Bench Press', eq:'b', pat:'tri', ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:10, rest:90, note:'Hands shoulder-width, elbows tucked. Mass move for triceps.', subs:['tr3','tr1']},
   {id:'tr5', n:'Diamond Push-Up', eq:'b', pat:'tri', ks:0, bs:0, fs:0, type:'bw', sets:3, lo:8, hi:15, rest:60, note:'Hands in a diamond. Superset finisher.', subs:['tr1','ph6']},
   {id:'co7', n:'Hanging Knee Raise', eq:'g', pat:'core', ks:0, bs:1, fs:0, type:'bw', sets:3, lo:8, hi:15, rest:60, note:'Slow, no swinging. Curl the hips at the top.', subs:['co1','co5']},
-  // ---- POSTPARTUM CORE LADDER (Julia) ‚Äî pelvic-floor-safe progression, minStage = core ladder stage ----
-  {id:'pp1', n:'360 Breathing + Pelvic Floor Lift', eq:'b', pat:'ppcore', minStage:0, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:6, hi:8, rest:30, note:'Inhale ribs wide; on the slow exhale gently lift pelvic floor + draw belly in. This IS the workout ‚Äî quality breaths.', subs:['pp2','pp3']},
+  // ---- POSTPARTUM CORE LADDER (Julia) — pelvic-floor-safe progression, minStage = core ladder stage ----
+  {id:'pp1', n:'360 Breathing + Pelvic Floor Lift', eq:'b', pat:'ppcore', minStage:0, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:6, hi:8, rest:30, note:'Inhale ribs wide; on the slow exhale gently lift pelvic floor + draw belly in. This IS the workout — quality breaths.', subs:['pp2','pp3']},
   {id:'pp2', n:'Heel Slides (with exhale)', eq:'b', pat:'ppcore', minStage:0, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:8, hi:10, rest:30, note:'Lying down, exhale + engage, slide one heel out and back. Low back stays quiet. Each leg.', subs:['pp1','pp3']},
   {id:'pp3', n:'Supine Marching', eq:'b', pat:'ppcore', minStage:0, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:8, hi:12, rest:30, note:'Knees up one at a time, exhale each lift, no belly doming. Each side.', subs:['pp2','pp4']},
-  {id:'pp4', n:'Side Plank from Knees', eq:'b', pat:'ppcore', minStage:1, ks:0, bs:0, fs:0, type:'iso', sets:3, lo:15, hi:30, rest:45, note:'Knees bent, hips forward and lifted. Breathe ‚Äî don\'t brace-and-hold-breath. Each side.', subs:['pp3','pp5']},
+  {id:'pp4', n:'Side Plank from Knees', eq:'b', pat:'ppcore', minStage:1, ks:0, bs:0, fs:0, type:'iso', sets:3, lo:15, hi:30, rest:45, note:'Knees bent, hips forward and lifted. Breathe — don\'t brace-and-hold-breath. Each side.', subs:['pp3','pp5']},
   {id:'pp5', n:'Bear Hold', eq:'b', pat:'ppcore', minStage:2, ks:1, bs:0, fs:0, type:'iso', sets:3, lo:15, hi:30, rest:45, note:'Hands and toes, knees hovering an inch up. Exhale steadily, back flat.', subs:['pp4','pp6']},
-  {id:'pp6', n:'Glute Bridge March', eq:'b', pat:'ppcore', minStage:2, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:8, hi:12, rest:45, note:'Hold the bridge, march slowly. Hips stay level ‚Äî that\'s the work.', subs:['pp5','pp4']},
+  {id:'pp6', n:'Glute Bridge March', eq:'b', pat:'ppcore', minStage:2, ks:0, bs:0, fs:0, type:'bw', sets:3, lo:8, hi:12, rest:45, note:'Hold the bridge, march slowly. Hips stay level — that\'s the work.', subs:['pp5','pp4']},
   {id:'pp7', n:'Tall-Kneeling Pallof Press', eq:'b', pat:'ppcore', minStage:2, ks:0, bs:0, fs:0, type:'w', sets:3, lo:8, hi:12, rest:45, note:'Cable at chest, press out, resist the twist, exhale on the press. Each side.', subs:['pp5','pp6']},
   // ---- LOW-IMPACT BODYWEIGHT CONDITIONING (no equipment) ----
   {id:'cdbw', n:'March + Step-Out Intervals', eq:'b', pat:'condition', ks:0, bs:0, fs:1, type:'time', sets:1, lo:8, hi:12, rest:0, note:'1 min brisk march, 30s side step-outs with arm reach, repeat. Zero impact, heart rate up.', subs:['cd5','cd1']}
@@ -144,7 +144,7 @@ R.EX = {}; R.EXDB.forEach(function(e){ R.EX[e.id] = e; });
 // Regular core moves admitted to the postpartum ladder at higher stages (pps = min core stage)
 R.EX.co1.pps = 1; R.EX.co2.pps = 1; R.EX.co9.pps = 1;
 R.EX.co3.pps = 2; R.EX.co4.pps = 2; R.EX.co5.pps = 2; R.EX.co6.pps = 3;
-// Compound "main lift" candidates ‚Äî the main slot of a split day prefers these over isolation work
+// Compound "main lift" candidates — the main slot of a split day prefers these over isolation work
 ['ph1','ph2','ph3','ph4','ph7','ph8','pv1','pv2','pv5','puv1','puv3','puv4','puh1','puh2','puh3','puh6',
  'sq4','sq5','sq6','sq7','sq8','hg4','hg5','hg6','hg8','lg5','lg6','lg7'].forEach(function(id){ R.EX[id].big = 1; });
 window.R = R;

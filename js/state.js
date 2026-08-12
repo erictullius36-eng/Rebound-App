@@ -51,7 +51,7 @@ R.load = function(){
   var mode = localStorage.getItem(R.PROFILE_KEY);
   if (!mode) {
     // Legacy auto-claim: only treat v1 data as Eric's if it shows real use.
-    // (A phone that merely OPENED the old version once has an empty v1 shell ‚Äî ignore it and show the picker.)
+    // (A phone that merely OPENED the old version once has an empty v1 shell — ignore it and show the picker.)
     try {
       var legacy = JSON.parse(localStorage.getItem('rebound_v1') || 'null');
       if (legacy && (Object.keys(legacy.workouts || {}).length ||

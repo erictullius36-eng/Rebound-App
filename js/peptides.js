@@ -4,7 +4,7 @@
 var R = window.R || {};
 
 R.pepDefaults = function(){
-  var stomach = ['Stomach ‚Äî upper L','Stomach ‚Äî upper R','Stomach ‚Äî lower L','Stomach ‚Äî lower R'];
+  var stomach = ['Stomach — upper L','Stomach — upper R','Stomach — lower L','Stomach — lower R'];
   return [
     {id:'pep1', name:'Reta', dose:'.75', days:[0,3], sites:stomach.slice(), shots:1, start:null, end:null},
     {id:'pep2', name:'Tesa', dose:'20', days:[1,2,3,4,5], sites:['Left glute','Right glute'], shots:1, start:null, end:null},
@@ -49,7 +49,7 @@ R.pepCycleInfo = function(p){
     var left = Math.round((new Date(p.end) - new Date(R.today())) / 86400000);
     bits.push(left === 0 ? 'last day' : 'ends in ' + left + 'd');
   }
-  return bits.join(' ¬∑ ');
+  return bits.join(' · ');
 };
 
 R.logShot = function(pid, site){
@@ -62,7 +62,7 @@ R.logShot = function(pid, site){
     t: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') });
   R.save();
   R.renderPeptides();
-  R.flash(p.name + ' ‚Üí ' + site + ' ‚úì');
+  R.flash(p.name + ' → ' + site + ' ✓');
 };
 R.deleteShot = function(dateStr, idx){
   R.S.pepLog[dateStr].splice(idx, 1);
@@ -80,7 +80,7 @@ R.pepCard = function(p, due){
   var cycle = R.pepCycleInfo(p);
   var meta = [p.dose && ('dose ' + p.dose), cycle,
     since === null ? 'never logged' : (since === 0 ? 'logged today' : 'last: ' + since + 'd ago'),
-    R.pepWeekTotal(p.id) + ' this week'].filter(Boolean).join(' ¬∑ ');
+    R.pepWeekTotal(p.id) + ' this week'].filter(Boolean).join(' · ');
   var sitesHtml = '';
   if (due && remaining > 0) {
     sitesHtml = '<div class="chip-row">' + p.sites.map(function(s){
@@ -90,14 +90,14 @@ R.pepCard = function(p, due){
       return '<button class="chip site' + (usedToday ? ' on' : '') + '" onclick="R.logShot(\'' + p.id + '\',\'' + R.esc(s).replace(/'/g,"\\'") + '\')">' +
         R.esc(s) + '<span class="site-age">' + fresh + '</span></button>';
     }).join('') + '</div>' +
-    '<p class="hint">' + (p.shots > 1 ? remaining + ' of ' + p.shots + ' injections left today ‚Äî tap each site.' : 'Tap the site you used. Oldest date = freshest spot.') + '</p>';
+    '<p class="hint">' + (p.shots > 1 ? remaining + ' of ' + p.shots + ' injections left today — tap each site.' : 'Tap the site you used. Oldest date = freshest spot.') + '</p>';
   } else if (due) {
-    sitesHtml = '<p class="pep-done">‚úì Done for today</p>';
+    sitesHtml = '<p class="pep-done">✓ Done for today</p>';
   }
   return '<div class="card pep-card' + (due && remaining > 0 ? ' due' : '') + '">' +
     '<div class="ex-head"><div><div class="ex-name">' + R.esc(p.name) + '</div>' +
     '<div class="ex-meta">' + meta + '</div></div>' +
-    '<button class="swap" onclick="R.pepEdit(\'' + p.id + '\')" title="Edit">‚úé</button></div>' +
+    '<button class="swap" onclick="R.pepEdit(\'' + p.id + '\')" title="Edit">✎</button></div>' +
     sitesHtml + '</div>';
 };
 
@@ -114,9 +114,9 @@ R.renderPeptides = function(){
   var html = '';
   if (!R.S.peptides.length) {
     html = '<div class="card"><h2>Peptide tracker</h2>' +
-      '<p class="hint">Log what you take, how much, and where ‚Äî so rotation is never a guess. Everything stays on this phone only.</p></div>';
+      '<p class="hint">Log what you take, how much, and where — so rotation is never a guess. Everything stays on this phone only.</p></div>';
   } else {
-    html += '<h3>Due today ¬∑ ' + ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][R.weekday(d)] + '</h3>';
+    html += '<h3>Due today · ' + ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][R.weekday(d)] + '</h3>';
     html += due.length ? due.map(function(p){ return R.pepCard(p, true); }).join('')
                        : '<p class="hint">Nothing scheduled today.</p>';
     if (rest.length) html += '<h3>Not due today</h3>' + rest.map(function(p){ return R.pepCard(p, false); }).join('');
@@ -130,12 +130,12 @@ R.renderPeptides = function(){
     html += '<h3>Recent injections</h3>' + dates.map(function(dt){
       return R.S.pepLog[dt].map(function(e, i){
         return '<div class="entry-row"><span class="e-time">' + dt.slice(5) + ' ' + e.t + '</span>' +
-          '<span class="e-name">' + R.esc(e.name) + ' ¬∑ ' + R.esc(e.dose) + '</span>' +
+          '<span class="e-name">' + R.esc(e.name) + ' · ' + R.esc(e.dose) + '</span>' +
           '<span class="e-g">' + R.esc(e.site) + '</span>' +
-          '<button class="e-del" onclick="R.deleteShot(\'' + dt + '\',' + i + ')" aria-label="delete">√ó</button></div>';
+          '<button class="e-del" onclick="R.deleteShot(\'' + dt + '\',' + i + ')" aria-label="delete">×</button></div>';
       }).join('');
     }).join('');
-    html += '<button class="btn" onclick="R.exportPeptideCSV()">‚¨áÔ∏é Peptide CSV</button>';
+    html += '<button class="btn" onclick="R.exportPeptideCSV()">⬇︎ Peptide CSV</button>';
   }
   el.innerHTML = html;
 };
@@ -150,7 +150,7 @@ R.pepFormHtml = function(pid){
   return '<div class="card form">' +
     '<h2>' + (pid ? 'Edit ' + R.esc(p.name) : 'Add a peptide') + '</h2>' +
     '<label>Name<input id="pep-name" type="text" value="' + R.esc(p.name) + '"></label>' +
-    '<label>Dose label (whatever you call it ‚Äî e.g. "20", ".75")<input id="pep-dose" type="text" value="' + R.esc(p.dose) + '"></label>' +
+    '<label>Dose label (whatever you call it — e.g. "20", ".75")<input id="pep-dose" type="text" value="' + R.esc(p.dose) + '"></label>' +
     '<label>Injections per scheduled day<input id="pep-shots" type="number" inputmode="numeric" value="' + p.shots + '"></label>' +
     '<h3>Days</h3><div class="chip-row">' + dayChips + '</div>' +
     '<label>Sites (comma-separated)<input id="pep-sites" type="text" value="' + R.esc(p.sites.join(', ')) + '" placeholder="e.g. Left glute, Right glute"></label>' +
@@ -158,7 +158,7 @@ R.pepFormHtml = function(pid){
       '<label>Start date<input id="pep-start" type="date" value="' + (p.start || '') + '"></label>' +
       '<label>End date<input id="pep-end" type="date" value="' + (p.end || '') + '"></label>' +
     '</div>' +
-    '<p class="hint">Leave dates blank for an open-ended run. Past the end date it moves to Inactive (history kept) ‚Äî set new dates to start the next cycle.</p>' +
+    '<p class="hint">Leave dates blank for an open-ended run. Past the end date it moves to Inactive (history kept) — set new dates to start the next cycle.</p>' +
     '<button class="btn primary" onclick="R.pepSave(' + (pid ? '\'' + pid + '\'' : 'null') + ')">Save</button>' +
     (pid ? '<button class="btn danger" onclick="R.pepDelete(\'' + pid + '\')">Delete peptide (history kept)</button>' : '') +
     '<button class="btn ghost" onclick="R.pepEdit(undefined)">Cancel</button>' +
