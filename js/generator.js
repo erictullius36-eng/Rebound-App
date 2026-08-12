@@ -5,27 +5,34 @@ var R = window.R || {};
 R.GATED = ['squat','lunge','hinge','jump'];
 R.STAGE_NAMES = ['Foundation (iso / pain-free range)','Rebuilding (tempo & partials)','Loading (full range, light)','Cleared (progressive load)'];
 
-// Day templates keyed by weekday (Sun=0). ball: basketball tonight -> keep legs fresh.
+// Day templates keyed by weekday (Sun=0). v4: 5-day hypertrophy split, 60-75 min, supersets (ss group ids).
+// ball = basketball that MORNING (bonus cardio, lift as planned). Weekends are flex days.
 R.dayTemplate = function(wd){
   var T = {
-    1: {focus:'Lower Rebuild A', slots:[
-        {pat:'squat', main:true},{pat:'hinge'},{pat:'lunge'},{pat:'calf_foot'},{pat:'core'},{pat:'core', opt:true}]},
-    2: {focus:'Upper Push', ball:true, slots:[
-        {pat:'push_h', main:true},{pat:'push_v'},{pat:'push_h'},{pat:'tri'},{pat:'core', opt:true}]},
-    3: {focus:'Lower Rebuild B — Posterior', slots:[
-        {pat:'hinge', main:true},{pat:'ham'},{pat:'squat'},{pat:'lunge'},{pat:'core'}]},
-    4: {focus:'Upper Pull', ball:true, slots:[
-        {pat:'pull_v', main:true},{pat:'pull_h'},{pat:'pull_acc'},{pat:'bi'},{pat:'core', opt:true}]},
-    5: {focus:'Full-Body Prep (short)', ball:true, light:true, slots:[
-        {pat:'push_h'},{pat:'pull_h'},{pat:'core'},{pat:'mobility'}]},
-    6: {focus:'Conditioning + Mobility', slots:[
-        {pat:'condition', main:true},{pat:'core'},{pat:'mobility'},{pat:'mobility'}]},
-    0: {focus:'Recovery', light:true, slots:[
-        {pat:'mobility'},{pat:'mobility'},{pat:'calf_foot'},{pat:'core'},{pat:'condition', opt:true}]}
+    1: {focus:'Chest + Triceps', slots:[
+        {pat:'push_h', main:true},{pat:'push_h'},{pat:'push_h', ss:1},{pat:'tri', ss:1},{pat:'tri'},{pat:'core'},{pat:'core', opt:true}]},
+    2: {focus:'Back + Biceps', ball:true, slots:[
+        {pat:'pull_v', main:true},{pat:'pull_h'},{pat:'pull_h'},{pat:'pull_acc', ss:1},{pat:'bi', ss:1},{pat:'bi'},{pat:'core'},{pat:'core', opt:true}]},
+    3: {focus:'Legs', slots:[
+        {pat:'squat', main:true},{pat:'hinge'},{pat:'lunge'},{pat:'ham', ss:1},{pat:'calf_foot', ss:1},{pat:'core'},{pat:'core', opt:true}]},
+    4: {focus:'Shoulders + Arms', ball:true, slots:[
+        {pat:'push_v', main:true},{pat:'push_v'},{pat:'pull_acc'},{pat:'traps'},{pat:'bi', ss:1},{pat:'tri', ss:1},{pat:'core'}]},
+    5: {focus:'Chest + Back', ball:true, slots:[
+        {pat:'push_h', main:true},{pat:'pull_v'},{pat:'push_h', ss:1},{pat:'pull_h', ss:1},{pat:'pull_acc'},{pat:'core'},{pat:'core', opt:true}]},
+    6: {focus:'Flex Day', flex:true, slots:[]},
+    0: {focus:'Flex Day', flex:true, slots:[]}
   };
-  // deep-ish copy so we can mutate slots
   var t = T[wd];
-  return {focus:t.focus, ball:!!t.ball, light:!!t.light, slots:t.slots.map(function(s){ return {pat:s.pat, main:!!s.main, opt:!!s.opt}; })};
+  return {focus:t.focus, ball:!!t.ball, light:!!t.light, flex:!!t.flex,
+    slots:t.slots.map(function(s){ return {pat:s.pat, main:!!s.main, opt:!!s.opt, ss:s.ss || 0}; })};
+};
+
+// Weekend flex sessions (home)
+R.FLEX = {
+  recovery: {focus:'Recovery & Mobility', slots:[
+    {pat:'mobility'},{pat:'mobility'},{pat:'calf_foot'},{pat:'core'},{pat:'mobility', opt:true}]},
+  condition: {focus:'Conditioning', slots:[
+    {pat:'condition', main:true},{pat:'core'},{pat:'core'},{pat:'mobility'}]}
 };
 
 R.jumpUnlocked = function(){
@@ -69,6 +76,7 @@ R.juliaEligible = function(pat, dateStr, recent, usedIds){
       if ((e.minStage || 0) > cap) return false;
     }
     if (e.pat === 'jump') return false; // no impact work in Julia's program
+    if (R.S.banned.indexOf(e.id) >= 0) return false;
     if (prefs.equip === 'bw' ? !e.bw : e.eq === 'g') return false; // bw mode or home-gym mode
     if (usedIds[e.id]) return false;
     if (R.S.avoid[e.id] && R.S.avoid[e.id] >= dateStr) return false;
@@ -91,9 +99,9 @@ R.juliaCompletedCount = function(){
 
 R.juliaTemplate = function(rot){
   var T = [
-    {focus:'Full Body A — Lower Focus', slots:['squat','lunge','ppcore'], extra:['hinge','ham','calf_foot']},
-    {focus:'Full Body B — Upper Focus', slots:['push_h','pull_h','ppcore'], extra:['push_v','bi','tri']},
-    {focus:'Full Body C — Move & Core', slots:['condition','ppcore','mobility'], extra:['ppcore','mobility','calf_foot']}
+    {focus:'Full Body A ‚Äî Lower Focus', slots:['squat','lunge','ppcore'], extra:['hinge','ham','calf_foot']},
+    {focus:'Full Body B ‚Äî Upper Focus', slots:['push_h','pull_h','ppcore'], extra:['push_v','bi','tri']},
+    {focus:'Full Body C ‚Äî Move & Core', slots:['condition','ppcore','mobility'], extra:['ppcore','mobility','calf_foot']}
   ];
   return T[rot % 3];
 };
@@ -128,11 +136,11 @@ R.generateJuliaWorkout = function(dateStr){
   });
 
   var notes = [];
-  if (prefs.difficulty === 'gentle') notes.push('Rebuilding phase — smooth reps, full exhales, nothing to prove. Bump difficulty in Settings whenever you\'re ready.');
+  if (prefs.difficulty === 'gentle') notes.push('Rebuilding phase ‚Äî smooth reps, full exhales, nothing to prove. Bump difficulty in Settings whenever you\'re ready.');
   var wu = prefs.equip === 'bw'
-    ? ['March in place — 2 min', '360 breathing — 5 slow breaths', 'Hip circles — 8 each way', 'Bodyweight glute bridge — 10']
-    : ['Easy bike spin — 3 min', '360 breathing — 5 slow breaths', 'Leg swings — 10 each direction', 'Bodyweight glute bridge — 10'];
-  var cd = ['Hip flexor stretch — 30s each side', 'Calf stretch — 30s each side', '360 breathing — 5 slow breaths to finish'];
+    ? ['March in place ‚Äî 2 min', '360 breathing ‚Äî 5 slow breaths', 'Hip circles ‚Äî 8 each way', 'Bodyweight glute bridge ‚Äî 10']
+    : ['Easy bike spin ‚Äî 3 min', '360 breathing ‚Äî 5 slow breaths', 'Leg swings ‚Äî 10 each direction', 'Bodyweight glute bridge ‚Äî 10'];
+  var cd = ['Hip flexor stretch ‚Äî 30s each side', 'Calf stretch ‚Äî 30s each side', '360 breathing ‚Äî 5 slow breaths to finish'];
 
   return {
     date: dateStr, focus: t.focus, loc: prefs.equip === 'bw' ? 'bw' : 'home', ball: false,
@@ -147,6 +155,7 @@ R.eligible = function(pat, loc, dateStr, recent, sore, usedIds){
   var stage = R.GATED.indexOf(pat) >= 0 ? R.S.rebuild[pat].stage : null;
   return R.EXDB.filter(function(e){
     if (e.pat !== pat) return false;
+    if (R.S.banned.indexOf(e.id) >= 0) return false;
     if (loc === 'home' ? e.eq === 'g' : e.eq === 'h') return false;
     if (usedIds[e.id]) return false;
     if (stage !== null && (e.minStage || 0) > stage) return false;
@@ -166,6 +175,7 @@ R.eligible = function(pat, loc, dateStr, recent, sore, usedIds){
 R.buildExercise = function(e, opts){
   var prog = R.S.progress[e.id] || {};
   var sets = e.sets;
+  if (opts.main && e.type === 'w') sets = 4; // main lift of the day gets 4 working sets
   if (opts.light || opts.lowEnergy) sets = Math.max(2, sets - 1);
   var target;
   if (e.type === 'iso') target = e.lo + '-' + e.hi + 's holds';
@@ -184,34 +194,34 @@ R.buildExercise = function(e, opts){
 };
 
 R.warmupFor = function(wd, loc){
-  var lower = [1,3].indexOf(wd) >= 0;
-  var base = [loc === 'home' ? 'Easy bike spin — 4 min' : 'Easy bike or incline walk — 4 min'];
-  if (lower) return base.concat(['Leg swings — 10 each direction','Bodyweight glute bridge — 12','Ankle rocks — 10 each side','Wall sit — 20s primer']);
-  if ([2,4,5].indexOf(wd) >= 0) return base.concat(['Arm circles — 10 each way','Band/cable pull-apart — 15','Push-up to down-dog — 6','Scap pulls or shrug rolls — 10']);
-  return ['Easy movement — 3 min','Cat-camel — 8','Hip circles — 8 each way'];
+  var base = [loc === 'home' ? 'Easy bike spin ‚Äî 4 min' : 'Easy bike or incline walk ‚Äî 4 min'];
+  if (wd === 3) return base.concat(['Leg swings ‚Äî 10 each direction','Bodyweight glute bridge ‚Äî 12','Ankle rocks ‚Äî 10 each side','Wall sit ‚Äî 20s primer']);
+  if ([1,2,4,5].indexOf(wd) >= 0) return base.concat(['Arm circles ‚Äî 10 each way','Band/cable pull-apart ‚Äî 15','Push-up to down-dog ‚Äî 6','2 light warm-up sets of your first lift']);
+  return ['Easy movement ‚Äî 3 min','Cat-camel ‚Äî 8','Hip circles ‚Äî 8 each way'];
 };
 R.cooldownFor = function(wd){
-  if ([1,3].indexOf(wd) >= 0) return ['Couch stretch — 45s each side','Hamstring floss — 10 each leg','Child’s pose breathing — 1 min'];
-  if ([2,4].indexOf(wd) >= 0) return ['Doorway/chest stretch — 30s each side','Thoracic open book — 8 each side','Long exhale breathing — 1 min'];
-  return ['Calf stretch — 30s each side','Hip flexor stretch — 30s each side','Child’s pose breathing — 1 min'];
+  if (wd === 3) return ['Couch stretch ‚Äî 45s each side','Hamstring floss ‚Äî 10 each leg','Child‚Äôs pose breathing ‚Äî 1 min'];
+  if ([1,2,4,5].indexOf(wd) >= 0) return ['Doorway/chest stretch ‚Äî 30s each side','Thoracic open book ‚Äî 8 each side','Long exhale breathing ‚Äî 1 min'];
+  return ['Calf stretch ‚Äî 30s each side','Hip flexor stretch ‚Äî 30s each side','Child‚Äôs pose breathing ‚Äî 1 min'];
 };
 
-R.generateWorkout = function(dateStr, checkin){
+R.generateWorkout = function(dateStr, checkin, flexType){
   checkin = checkin || {energy:3, sore:{}};
   var wd = R.weekday(dateStr);
   var t = R.dayTemplate(wd);
   var loc = R.S.schedule.homeDays.indexOf(wd) >= 0 ? 'home' : 'gym';
+  if (t.flex) { t = {focus: R.FLEX[flexType].focus, ball:false, light:true, slots: R.FLEX[flexType].slots.map(function(s){ return {pat:s.pat, main:!!s.main, opt:!!s.opt, ss:0}; })}; loc = 'home'; }
   var lowEnergy = checkin.energy <= 2;
   var gap = R.lastCompletedGap(dateStr);
   var reentry = gap !== null && gap >= 5;
 
-  // dunk track: add a jump slot to lower days when unlocked, fresh legs, decent energy
-  if ([1,3].indexOf(wd) >= 0 && R.jumpUnlocked() && !lowEnergy && !checkin.sore.legs && !checkin.sore.knees && !checkin.sore.feet) {
-    t.slots.unshift({pat:'jump', main:true});
+  // dunk track: jump work leads leg day when unlocked, fresh legs, decent energy
+  if (wd === 3 && R.jumpUnlocked() && !lowEnergy && !checkin.sore.legs && !checkin.sore.knees && !checkin.sore.feet) {
+    t.slots.unshift({pat:'jump', main:true, ss:0});
   }
   var slots = t.slots.filter(function(s){ return !(s.opt && (lowEnergy || reentry)); });
   if (checkin.sore.legs) slots = slots.filter(function(s){ return !(['squat','lunge','hinge','ham'].indexOf(s.pat) >= 0 && !s.main); });
-  if (checkin.sore.upper) slots = slots.filter(function(s){ return !(['push_h','push_v','pull_h','pull_v','tri','bi','pull_acc'].indexOf(s.pat) >= 0 && !s.main); });
+  if (checkin.sore.upper) slots = slots.filter(function(s){ return !(['push_h','push_v','pull_h','pull_v','tri','bi','pull_acc','traps'].indexOf(s.pat) >= 0 && !s.main); });
 
   var recent = R.recentIds(dateStr, 2);
   var usedIds = {};
@@ -220,15 +230,21 @@ R.generateWorkout = function(dateStr, checkin){
     var pool = R.eligible(slot.pat, loc, dateStr, recent, checkin.sore, usedIds);
     if (!pool.length) pool = R.eligible(slot.pat, loc, dateStr, {}, checkin.sore, usedIds); // relax recency
     if (!pool.length) return; // nothing safe for this slot today
+    if (slot.main) {
+      var bigs = pool.filter(function(e){ return e.big; });
+      if (bigs.length) pool = bigs; // main slot leads with a compound when one is available
+    }
     var pick = pool[0];
     usedIds[pick.id] = true;
-    exercises.push(R.buildExercise(pick, {light: t.light || reentry, lowEnergy: lowEnergy}));
+    var ex = R.buildExercise(pick, {light: t.light || reentry, lowEnergy: lowEnergy, main: slot.main});
+    ex.ss = slot.ss;
+    exercises.push(ex);
   });
 
   var notes = [];
-  if (t.ball) notes.push('Basketball tonight — this session leaves your legs fresh.');
-  if (reentry) notes.push('Been ' + gap + ' days — this is a lighter re-entry session on purpose. Ease back in.');
-  if (lowEnergy) notes.push('Low energy day — volume trimmed. Showing up still counts.');
+  if (t.ball) notes.push('üèÄ Ball this morning ‚Äî free cardio. Lift as planned.');
+  if (reentry) notes.push('Been ' + gap + ' days ‚Äî this is a lighter re-entry session on purpose. Ease back in.');
+  if (lowEnergy) notes.push('Low energy day ‚Äî volume trimmed. Showing up still counts.');
   if (checkin.sore.knees || checkin.sore.back || checkin.sore.feet) notes.push('Sore-area exercises swapped out for today.');
 
   return {

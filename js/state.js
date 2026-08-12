@@ -7,7 +7,8 @@ R.keyFor = function(mode){ return mode === 'julia' ? 'rebound_julia_v1' : 'rebou
 
 R.defaults = function(mode){
   if (mode === 'julia') return {
-    version: 1,
+    version: 2,
+    v4: true,
     mode: 'julia',
     profile: { age:34, heightIn:67, weightLbs:165, sex:'female', goalWeight:145 },
     nursing: true, // breastfeeding: gentle deficit, high protein; toggle off in Settings
@@ -18,12 +19,16 @@ R.defaults = function(mode){
     proteinLog: {},
     workouts: {},
     progress: {},
-    avoid: {}
+    avoid: {},
+    banned: [],
+    peptides: [],  // Julia builds her own list
+    pepLog: {}
   };
   return {
-    version: 1,
+    version: 2,
+    v4: true,
     mode: 'eric',
-    profile: { age:38, heightIn:73, weightLbs:235, sex:'male', goalWeight:200, goalBF:13 },
+    profile: { age:38, heightIn:73, weightLbs:227, sex:'male', goalWeight:205, goalBF:13 },
     schedule: { basketballDays:[2,4,5], homeDays:[0,6] },
     rebuild: {
       squat:{stage:0, clean:0}, lunge:{stage:0, clean:0},
@@ -34,7 +39,10 @@ R.defaults = function(mode){
     proteinLog: {},
     workouts: {},
     progress: {},
-    avoid: {}
+    avoid: {},
+    banned: [],
+    peptides: R.pepDefaults ? R.pepDefaults() : [],
+    pepLog: {}
   };
 };
 
@@ -43,7 +51,7 @@ R.load = function(){
   var mode = localStorage.getItem(R.PROFILE_KEY);
   if (!mode) {
     // Legacy auto-claim: only treat v1 data as Eric's if it shows real use.
-    // (A phone that merely OPENED the old version once has an empty v1 shell — ignore it and show the picker.)
+    // (A phone that merely OPENED the old version once has an empty v1 shell ‚Äî ignore it and show the picker.)
     try {
       var legacy = JSON.parse(localStorage.getItem('rebound_v1') || 'null');
       if (legacy && (Object.keys(legacy.workouts || {}).length ||
@@ -56,8 +64,18 @@ R.load = function(){
   R.KEY = R.keyFor(mode);
   var raw = localStorage.getItem(R.KEY);
   var s = raw ? JSON.parse(raw) : R.defaults(mode);
+  var hadV4 = s.v4 === true; // must be read BEFORE the defaults fill adds v4:true
   var d = R.defaults(mode);
   Object.keys(d).forEach(function(k){ if (s[k] === undefined) s[k] = d[k]; });
+  // one-time v4 migration for pre-existing data (new split era: updated stats, seeded peptides)
+  if (!hadV4) {
+    if (s.mode === 'eric') {
+      s.profile.weightLbs = 227;
+      s.profile.goalWeight = 205;
+      if (!s.peptides.length && R.pepDefaults) s.peptides = R.pepDefaults();
+    }
+    s.v4 = true;
+  }
   return s;
 };
 R.setProfile = function(mode){
