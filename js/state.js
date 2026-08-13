@@ -77,6 +77,7 @@ R.load = function(){
   var raw = localStorage.getItem(R.KEY);
   var s = raw ? JSON.parse(raw) : R.defaults(mode);
   var hadV4 = s.v4 === true; // must be read BEFORE the defaults fill adds v4:true
+  var hadKneeSites = s.kneeSites === true;
   var d = R.defaults(mode);
   Object.keys(d).forEach(function(k){ if (s[k] === undefined) s[k] = d[k]; });
   // one-time v4 migration for pre-existing data (new split era: updated stats, seeded peptides)
@@ -87,6 +88,14 @@ R.load = function(){
       if (!s.peptides.length && R.pepDefaults) s.peptides = R.pepDefaults();
     }
     s.v4 = true;
+  }
+  // split a single "knee" site into rotation areas, leaving hand-edited lists alone
+  if (!hadKneeSites) {
+    (s.peptides || []).forEach(function(p){
+      var i = (p.sites || []).findIndex(function(site){ return /knee$/i.test(site.trim()); });
+      if (i >= 0 && R.KNEE_SITES) p.sites.splice.apply(p.sites, [i, 1].concat(R.KNEE_SITES));
+    });
+    s.kneeSites = true;
   }
   return s;
 };

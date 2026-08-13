@@ -1,6 +1,6 @@
 // Rebound service worker — cache-first so the app works fully offline.
 // Bump VERSION whenever any file changes to push an update to installed phones.
-var VERSION = 'rebound-v5';
+var VERSION = 'rebound-v6';
 var FILES = [
   './',
   './index.html',

@@ -3,12 +3,16 @@
 // Data lives in S.peptides (definitions) and S.pepLog (date -> entries), per profile, local-only.
 var R = window.R || {};
 
+// Rotation spots: stomach quadrants and knee areas
+R.STOMACH_SITES = ['Stomach — upper L','Stomach — upper R','Stomach — lower L','Stomach — lower R'];
+R.KNEE_SITES = ['R knee — inner','R knee — outer','R knee — above','R knee — below'];
+
 R.pepDefaults = function(){
-  var stomach = ['Stomach — upper L','Stomach — upper R','Stomach — lower L','Stomach — lower R'];
+  var stomach = R.STOMACH_SITES;
   return [
     {id:'pep1', name:'Reta', dose:'.75', days:[0,3], sites:stomach.slice(), shots:1, start:null, end:null},
     {id:'pep2', name:'Tesa', dose:'20', days:[1,2,3,4,5], sites:['Left glute','Right glute'], shots:1, start:null, end:null},
-    {id:'pep3', name:'BPC-157 / TB-500', dose:'20', days:[0,1,2,3,4], sites:['Right knee','Lower back'], shots:2, start:null, end:null},
+    {id:'pep3', name:'BPC-157 / TB-500', dose:'20', days:[0,1,2,3,4], sites:R.KNEE_SITES.concat(['Lower back']), shots:2, start:null, end:null},
     {id:'pep4', name:'MOTS-c', dose:'30', days:[2,5], sites:stomach.slice(), shots:1, start:null, end:null}
   ];
 };
