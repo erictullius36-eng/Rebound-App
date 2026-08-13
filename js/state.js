@@ -78,6 +78,7 @@ R.load = function(){
   var s = raw ? JSON.parse(raw) : R.defaults(mode);
   var hadV4 = s.v4 === true; // must be read BEFORE the defaults fill adds v4:true
   var hadKneeSites = s.kneeSites === true;
+  var hadBackSites = s.backSites === true;
   var d = R.defaults(mode);
   Object.keys(d).forEach(function(k){ if (s[k] === undefined) s[k] = d[k]; });
   // one-time v4 migration for pre-existing data (new split era: updated stats, seeded peptides)
@@ -96,6 +97,14 @@ R.load = function(){
       if (i >= 0 && R.KNEE_SITES) p.sites.splice.apply(p.sites, [i, 1].concat(R.KNEE_SITES));
     });
     s.kneeSites = true;
+  }
+  // same for a single "lower back" site -> left/right
+  if (!hadBackSites) {
+    (s.peptides || []).forEach(function(p){
+      var i = (p.sites || []).findIndex(function(site){ return /lower back$/i.test(site.trim()); });
+      if (i >= 0 && R.BACK_SITES) p.sites.splice.apply(p.sites, [i, 1].concat(R.BACK_SITES));
+    });
+    s.backSites = true;
   }
   return s;
 };
