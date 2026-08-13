@@ -24,7 +24,7 @@ R.flexHtml = function(){
     '<button class="btn primary big" onclick="R.pickFlex(\'rest\')">😴 Rest day</button>' +
     '<button class="btn big" onclick="R.pickFlex(\'recovery\')">🧘 Recovery & mobility</button>' +
     '<button class="btn big" onclick="R.pickFlex(\'condition\')">🚴 Conditioning</button>' +
-    '</div>';
+    '</div>' + R.builderLinksHtml();
 };
 R.pickFlex = function(type){
   var d = R.today();
@@ -49,7 +49,7 @@ R.juliaStartHtml = function(){
     '<h2>' + R.juliaNextFocus() + '</h2>' +
     '<p class="hint">' + lenLabel + ' · ' + (p.equip === 'bw' ? 'no equipment' : 'basement gym') + ' · ' + p.difficulty + ' mode — all adjustable in Settings.</p>' +
     '<button class="btn primary big" onclick="R.startJulia()">Build my workout</button>' +
-    '</div>';
+    '</div>' + R.builderLinksHtml();
 };
 R.startJulia = function(){
   R.S.workouts[R.today()] = R.generateJuliaWorkout(R.today());
@@ -73,7 +73,7 @@ R.checkinHtml = function(){
     '<h3>Anything sore?</h3>' +
     '<div class="chip-row">' + soreChips + '</div>' +
     '<button class="btn primary big" onclick="R.startToday()">Build my workout</button>' +
-    '</div>';
+    '</div>' + R.builderLinksHtml();
 };
 R.pickEnergy = function(btn){
   document.querySelectorAll('.energy').forEach(function(b){ b.classList.remove('on'); });
@@ -113,9 +113,11 @@ R.workoutHtml = function(w){
     '<span class="tag">' + (w.loc === 'home' ? '🏠 Home' : '🏋️ Gym') + '</span></div>' + notes +
     '<details class="card" open><summary>Warm-up</summary>' + list(w.warmup) + '</details>' +
     exHtml +
+    '<button class="btn" onclick="R.showPicker()">＋ Add exercise</button>' +
     '<details class="card"><summary>Cool-down</summary>' + list(w.cooldown) + '</details>' +
     '<button class="btn primary big" onclick="R.showFinish()">Finish workout</button>' +
     '<div id="finish-area"></div>' +
+    '<button class="btn ghost" onclick="R.saveTemplate()">💾 Save as template</button>' +
     '<button class="btn ghost" onclick="R.regenToday()">↻ Rebuild today\'s workout</button>';
 };
 
@@ -140,6 +142,18 @@ R.exerciseCard = function(ex, i, extraClass){
     '<div class="ex-btns"><button class="swap" onclick="R.doSwap(' + i + ')" title="Swap exercise">⇄</button>' +
     '<button class="swap ban" onclick="R.banExercise(' + i + ')" title="Never show this exercise again">👎</button></div></div>' +
     (ex.note ? '<p class="ex-note">' + R.esc(ex.note) + '</p>' : '') +
+    '<div class="ex-toolbar">' +
+      '<button class="tb" onclick="R.moveEx(' + i + ',-1)">↑</button>' +
+      '<button class="tb" onclick="R.moveEx(' + i + ',1)">↓</button>' +
+      '<button class="tb" onclick="R.toggleEdit(' + i + ')">✎ edit</button>' +
+      '<button class="tb" onclick="R.removeEx(' + i + ')">✕ remove</button>' +
+    '</div>' +
+    (R._editIdx === i ?
+      '<div class="ex-editrow">' +
+        '<span>Sets</span><button class="tb" onclick="R.editSets(' + i + ',-1)">−</button>' +
+        '<b>' + ex.sets.length + '</b><button class="tb" onclick="R.editSets(' + i + ',1)">＋</button>' +
+        '<span>Rest</span><input type="number" inputmode="numeric" value="' + (ex.rest || 0) + '" onchange="R.editRest(' + i + ',this.value)"><span>sec</span>' +
+      '</div>' : '') +
     setsHtml +
     (ex.rest ? '<button class="btn rest" id="rest-' + i + '" onclick="R.startRest(' + i + ',' + ex.rest + ')">Rest ' + ex.rest + 's</button>' : '') +
     '</div>';
@@ -156,7 +170,7 @@ R.toggleSet = function(i, j){
   s.done = !s.done;
   // convenience: checking an empty set fills the suggested values
   if (s.done && !s.reps) {
-    var db = R.EX[w.exercises[i].id];
+    var db = R.getEx(w.exercises[i].id) || {hi: 10};
     s.reps = db.hi;
     var row = document.getElementById('set-' + i + '-' + j);
     if (row) row.querySelector('input').value = db.hi;
@@ -236,8 +250,9 @@ R.submitFinish = function(){
   if (pain.length) {
     var map = {knees:'ks', back:'bs', feet:'fs'};
     w.exercises.forEach(function(ex){
-      var db = R.EX[ex.id];
-      pain.forEach(function(a){ if (db[map[a]] >= 2) painExIds.push(ex.id); });
+      var db = R.getEx(ex.id);
+      if (!db) return;
+      pain.forEach(function(a){ if ((db[map[a]] || 0) >= 2) painExIds.push(ex.id); });
     });
   }
   R.finishWorkout(w, rating, pain, painExIds);

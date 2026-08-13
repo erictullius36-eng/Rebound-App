@@ -46,6 +46,8 @@ R.renderSettings = function(){
       '<h3>Rebuild status</h3>' + rebuild +
       '<p class="hint">Stages advance with ' + R.CLEAN_TO_ADVANCE + ' pain-free sessions per pattern, drop back if you report pain. The dunk track unlocks when Squat and Lunge are both cleared.</p>' +
     '</div>' +
+    R.customExCard() +
+    R.pinsCard() +
     R.hiddenCard() +
     '<div class="card">' +
       '<h3>Data</h3>' +
@@ -110,6 +112,8 @@ R.renderJuliaSettings = function(){
       '</div>' +
       '<p class="hint">Advances automatically every 4 workouts. If anything feels off in your core or pelvic floor (pressure, doming, leaking), step back a stage — no shame, that\'s the system working.</p>' +
     '</div>' +
+    R.customExCard() +
+    R.pinsCard() +
     R.hiddenCard() +
     '<div class="card">' +
       '<h3>Data</h3>' +

@@ -20,7 +20,8 @@ R.finishWorkout = function(w, rating, painAreas, painExIds){
       if (wt > bestW || (wt === bestW && rp > bestR)) { bestW = wt; bestR = rp; }
     });
     if (!any) return;
-    var db = R.EX[ex.id];
+    var db = R.getEx(ex.id);
+    if (!db) return; // custom exercise deleted since this workout was built
     var prog = R.S.progress[ex.id] || {};
     if (db.type === 'w' && bestW) {
       // double progression: top of rep range hit and not "too hard" -> suggest more weight next time

@@ -22,7 +22,10 @@ R.defaults = function(mode){
     avoid: {},
     banned: [],
     peptides: [],  // Julia builds her own list
-    pepLog: {}
+    pepLog: {},
+    customEx: [],  // user-built exercises
+    pins: {},      // day key -> [exercise ids] always included
+    templates: []  // saved workout templates
   };
   return {
     version: 2,
@@ -42,8 +45,17 @@ R.defaults = function(mode){
     avoid: {},
     banned: [],
     peptides: R.pepDefaults ? R.pepDefaults() : [],
-    pepLog: {}
+    pepLog: {},
+    customEx: [],
+    pins: {},
+    templates: []
   };
+};
+
+// exercise lookup across the built-in database and the user's custom exercises
+R.getEx = function(id){
+  if (R.EX && R.EX[id]) return R.EX[id];
+  return (R.S && R.S.customEx || []).find(function(e){ return e.id === id; }) || null;
 };
 
 // Returns state, or null if this device hasn't picked a profile yet (show picker).
@@ -204,7 +216,7 @@ R.exportWorkoutCSV = function(){
     var w = R.S.workouts[d];
     (w.exercises || []).forEach(function(ex){
       var done = ex.sets.filter(function(s){ return s.done; }).length;
-      var db = R.EX[ex.id] || {};
+      var db = R.getEx(ex.id) || {};
       var unit = db.type === 'iso' ? ' sec' : (db.type === 'time' ? ' min' : ' reps');
       var best = '';
       ex.sets.forEach(function(s){

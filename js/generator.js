@@ -27,6 +27,35 @@ R.dayTemplate = function(wd){
     slots:t.slots.map(function(s){ return {pat:s.pat, main:!!s.main, opt:!!s.opt, ss:s.ss || 0}; })};
 };
 
+// ---- user slots: pins ("include every X") + generator-enabled custom exercises ----
+// Pin keys: Eric = weekday '0'-'6'; Julia = rotation 'r0'/'r1'/'r2'.
+R.pinKeyFor = function(dateStr, rot){
+  return R.isJulia() ? 'r' + rot : String(R.weekday(dateStr));
+};
+R.applyUserSlots = function(exercises, dateStr, key, loc){
+  var have = {};
+  exercises.forEach(function(e){ have[e.id] = true; });
+  var wanted = (R.S.pins[key] || []).slice();
+  R.S.customEx.forEach(function(c){
+    if (!c.gen) return;
+    var tags = c.tags || [];
+    if (tags.indexOf(key) >= 0 && wanted.indexOf(c.id) < 0) wanted.push(c.id);
+  });
+  wanted.forEach(function(id){
+    if (have[id]) return;
+    if (R.S.banned.indexOf(id) >= 0) return;
+    if (R.S.avoid[id] && R.S.avoid[id] >= dateStr) return;
+    var e = R.getEx(id);
+    if (!e) return; // deleted custom or unknown id — drop the pin silently
+    if (e.eq) { // built-ins respect location/equipment; customs are location-free
+      if (R.isJulia()) { if (R.S.prefs.equip === 'bw' ? !e.bw : e.eq === 'g') return; }
+      else if (loc === 'home' ? e.eq === 'g' : e.eq === 'h') return;
+    }
+    exercises.push(R.buildExercise(e, {}));
+    have[id] = true;
+  });
+};
+
 // Weekend flex sessions (home)
 R.FLEX = {
   recovery: {focus:'Recovery & Mobility', slots:[
@@ -113,7 +142,8 @@ R.juliaNextFocus = function(){
 
 R.generateJuliaWorkout = function(dateStr){
   var prefs = R.S.prefs;
-  var t = R.juliaTemplate(R.juliaCompletedCount());
+  var rot = R.juliaCompletedCount() % 3;
+  var t = R.juliaTemplate(rot);
   // session length: short = base slots, medium/long add from the extras list
   var slots = t.slots.slice();
   var extraN = prefs.length === 'medium' ? 1 : (prefs.length === 'long' ? 3 : 0);
@@ -135,6 +165,8 @@ R.generateJuliaWorkout = function(dateStr){
     exercises.push(ex);
   });
 
+  R.applyUserSlots(exercises, dateStr, 'r' + rot, prefs.equip === 'bw' ? 'bw' : 'home');
+
   var notes = [];
   if (prefs.difficulty === 'gentle') notes.push('Rebuilding phase — smooth reps, full exhales, nothing to prove. Bump difficulty in Settings whenever you\'re ready.');
   var wu = prefs.equip === 'bw'
@@ -143,7 +175,7 @@ R.generateJuliaWorkout = function(dateStr){
   var cd = ['Hip flexor stretch — 30s each side', 'Calf stretch — 30s each side', '360 breathing — 5 slow breaths to finish'];
 
   return {
-    date: dateStr, focus: t.focus, loc: prefs.equip === 'bw' ? 'bw' : 'home', ball: false,
+    date: dateStr, focus: t.focus, rot: rot, loc: prefs.equip === 'bw' ? 'bw' : 'home', ball: false,
     checkin: {energy:3, sore:{}}, notes: notes,
     warmup: wu, cooldown: cd,
     exercises: exercises,
@@ -241,6 +273,8 @@ R.generateWorkout = function(dateStr, checkin, flexType){
     exercises.push(ex);
   });
 
+  R.applyUserSlots(exercises, dateStr, String(wd), loc);
+
   var notes = [];
   if (t.ball) notes.push('🏀 Ball this morning — free cardio. Lift as planned.');
   if (reentry) notes.push('Been ' + gap + ' days — this is a lighter re-entry session on purpose. Ease back in.');
@@ -262,6 +296,7 @@ R.swapExercise = function(workout, idx){
   var used = {};
   workout.exercises.forEach(function(e){ used[e.id] = true; });
   var e = R.EX[cur.id];
+  if (!e) return false; // custom exercises have no swap pool — edit or remove instead
   if (R.isJulia()) {
     var jpat = cur.pat === 'core' ? 'ppcore' : cur.pat; // pps-admitted core moves swap within the ladder
     var jpool = R.juliaEligible(jpat, workout.date, {}, used);
